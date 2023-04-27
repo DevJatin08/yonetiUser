@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "753517877567",
+    "project_id": "yoneti-ad795",
+    "storage_bucket": "yoneti-ad795.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753517877567:android:2d7bb8a7754aa6e2f6db8a",
+        "android_client_info": {
+          "package_name": "app.examples.userapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1kplxTP0l-umCxA47Z5RKmYOhTp5Hi2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753517877567:android:a84d47588796362af6db8a",
+        "android_client_info": {
+          "package_name": "com.example.yonetimerchant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1kplxTP0l-umCxA47Z5RKmYOhTp5Hi2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
