@@ -362,7 +362,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _userProvider = useProvider(userInfoProvider);
+    final _useProvider = useProvider(userInfoProvider);
     final _chatProvider = useProvider(chatServiceProvider);
     final _marchantProvider = context.read(marchantProvider);
     final size = MediaQuery.of(context).size;
@@ -371,7 +371,7 @@ class _ChatScreenState extends State<ChatScreen> {
         body: Stack(
       children: [
         Image.network(
-          _userProvider.userData.avatar ?? 'https://content.latest-hairstyles.com/wp-content/uploads/crew-cut-for-men-500x333.jpg',
+          _useProvider.userData.avatar ?? 'https://content.latest-hairstyles.com/wp-content/uploads/crew-cut-for-men-500x333.jpg',
           height: size.height * 0.3,
           width: size.width,
           fit: BoxFit.cover,
@@ -476,7 +476,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           child: CircleAvatar(
                                                             radius: 11,
                                                             backgroundImage: NetworkImage(
-                                                              _userProvider.userData.avatar ??
+                                                              _useProvider.userData.avatar ??
                                                                   'https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1',
                                                             ),
                                                           ),

@@ -1,5 +1,6 @@
 const baseURl = 'https://yoneti.com/api/index.php/';
 const url_login = 'users/login';
+const url_sociallogin = 'users/social_login';
 const url_notification = 'https://fcm.googleapis.com/fcm/send';
 const url_singin = 'users/signup';
 const url_sendOTP = 'users/sendOTP';
@@ -18,11 +19,13 @@ const url_changePassword = 'users/changePassword';
 // Home //
 const url_homeGetCategories = 'users_api/Home/getCategories';
 const url_getMarchantList = 'users_api/Home/getMarchantList';
+const url_getgetAdsPackagesList = 'users_api/Home/getAdsPackages';
 const url_getMarchantAllDetails = 'users_api/Home/getMarchantAllDetails';
 // Top Finder //
 const url_topreviews = 'users_api/Finders/reviews';
 const url_getNotifications = 'users_api/Home/getNotifications';
 const url_updateNotification = "users_api/Home/updateNotification";
+const url_cancelOrders = 'Marchant_orders/cancelOrders';
 const url_getBookmark = 'users/getBookmark';
 const url_shares = "users_api/Home/shares";
 const url_likePhoto = 'users_api/Home/like_photos';

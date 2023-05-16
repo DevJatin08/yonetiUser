@@ -22,7 +22,8 @@ class OrderDetail extends StatefulHookWidget {
   String? Order_id;
   Booking booking;
 
-  OrderDetail({Key? key, this.Order_id, required this.booking}) : super(key: key);
+  OrderDetail({Key? key, this.Order_id, required this.booking})
+      : super(key: key);
 
   @override
   _OrderDetailState createState() => _OrderDetailState();
@@ -37,7 +38,9 @@ class _OrderDetailState extends State<OrderDetail> {
 
     super.initState();
     loadData();
-    mins = Duration(seconds: int.parse(1000.toString()) + int.parse(1000.toString())).inMinutes;
+    mins = Duration(
+            seconds: int.parse(1000.toString()) + int.parse(1000.toString()))
+        .inMinutes;
   }
 
   bool loader = true;
@@ -47,8 +50,10 @@ class _OrderDetailState extends State<OrderDetail> {
     final _orderProvider = context.read(orderProvider);
     //  await context.read(marchantProvider).getMarchantDetail(_orderProvider.orderDetailsEmpty.marchantId);
     await _orderProvider.orderDetails(order_id: widget.Order_id.toString());
-    await context.read(marchantProvider).getMarchantDetail(_orderProvider.orderDetailsEmpty.marchantId);
-    if (_marchantProvider.marchantDetails.orders![0] != null) _order = _marchantProvider.marchantDetails.orders![0];
+    await context.read(marchantProvider)
+        .getMarchantDetail(_orderProvider.orderDetailsEmpty.marchantId);
+    if (_marchantProvider.marchantDetails.orders![0] != null)
+      _order = _marchantProvider.marchantDetails.orders![0];
     setState(() {
       loader = false;
     });
@@ -68,7 +73,10 @@ class _OrderDetailState extends State<OrderDetail> {
     _orderProvider.orderDetails(order_id: widget.Order_id.toString());
 
     return Container(
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
       child: loader
           ? LoadingWidget()
           : Column(
@@ -86,26 +94,31 @@ class _OrderDetailState extends State<OrderDetail> {
                           fontFamily: 'bold',
                         ),
                         children: [
-                          TextSpan(text: '${now.day}-${month[now.month - 1]}-${now.year}'),
+                          TextSpan(
+                              text:
+                                  '${now.day}-${month[now.month - 1]}-${now.year}'),
                         ],
                       ),
                     ),
                   ),
                 ),
                 FutureBuilder<OrderDetails>(
-                  future: _orderProvider.orderDetails(order_id: widget.Order_id.toString()),
+                  future: _orderProvider.orderDetails(
+                      order_id: widget.Order_id.toString()),
                   builder: (context, snapshot) {
                     log(jsonEncode(snapshot.data), name: "Swap Data");
                     if (snapshot.hasData) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             RichText(
                               text: TextSpan(
-                                text: '${_orderProvider.orderDetailsEmpty.userName}',
+                                text:
+                                    '${_orderProvider.orderDetailsEmpty.userName}',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.black,
@@ -149,23 +162,36 @@ class _OrderDetailState extends State<OrderDetail> {
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       content: Container(
-                                        height: _marchantProvider.marchantDetails.orders!.length * 77,
-                                        width: MediaQuery.of(context).size.width,
+                                        height: _marchantProvider
+                                                .marchantDetails
+                                                .orders!
+                                                .length *
+                                            77,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         child: ListView.separated(
                                           shrinkWrap: true,
-                                          itemCount: _marchantProvider.marchantDetails.orders!.length,
+                                          itemCount: _marchantProvider
+                                              .marchantDetails.orders!.length,
                                           itemBuilder: (context, index) {
                                             return GestureDetector(
                                                 onTap: () {
                                                   setState(() {
-                                                    _order = _marchantProvider.marchantDetails.orders![index];
+                                                    _order = _marchantProvider
+                                                        .marchantDetails
+                                                        .orders![index];
                                                   });
                                                   log(_order.date.toString());
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: SwapUserCard(_marchantProvider.marchantDetails.orders![index]));
+                                                child: SwapUserCard(
+                                                    _marchantProvider
+                                                        .marchantDetails
+                                                        .orders![index]));
                                           },
-                                          separatorBuilder: (BuildContext context, int index) {
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                  int index) {
                                             return SizedBox(
                                               height: 8,
                                             );
@@ -243,6 +269,7 @@ class _OrderDetailState extends State<OrderDetail> {
                             //   ),
                             // )
                             // DropdownButton(items: _marchantProvider.marchantDetails.orders!.map((e) => DropdownMenuItem(child: SwapUserCard(e),value: e.booking_id,)).toList(), onChanged: (value){})
+
                             SizedBox(height: size.height * 0.05),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -259,11 +286,17 @@ class _OrderDetailState extends State<OrderDetail> {
                                     if (accept == false) {
                                       _swapBookingProvider.SwapBooking(
                                           context: context,
-                                          swap_user_id: _order.booking_id.toString(),
-                                          user_booking_id: _orderProvider.orderDetailsEmpty.orderId,
-                                          swap_user_booking_id: _order.order_id.toString());
+                                          swap_user_id:
+                                              _order.booking_id.toString(),
+                                          user_booking_id: _orderProvider
+                                              .orderDetailsEmpty.orderId,
+                                          swap_user_booking_id:
+                                              _order.order_id.toString());
                                       Navigator.of(context).pop();
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${_swapBookingProvider.snack}")));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "${_swapBookingProvider.snack}")));
                                     }
                                   },
                                   primaryColor,
@@ -276,11 +309,46 @@ class _OrderDetailState extends State<OrderDetail> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: size.height * 0.05),
+                            Align(
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _orderProvider
+                                        .getCancelOrders(
+                                            order_id:
+                                                widget.Order_id.toString())
+                                        .then((value) {
+                                      Navigator.of(context).pop();
+                                    });
+                                  });
+                                },
+                                child: Container(
+                                    width: size.width * 0.45,
+                                    height: size.width * 0.13,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Center(
+                                      child: Text(
+                                        "Cancel Order",
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontFamily: 'semiBold',
+                                            fontSize: 18),
+                                      ),
+                                    )),
+                              ),
+                            ),
                           ],
                         ),
                       );
                     }
-                    return AspectRatio(aspectRatio: 12 / 9, child: Center(child: LoadingWidget()));
+                    return AspectRatio(
+                        aspectRatio: 12 / 9,
+                        child: Center(child: LoadingWidget()));
                   },
                 ),
               ],
@@ -320,7 +388,8 @@ class _OrderDetailState extends State<OrderDetail> {
                   children: [
                     Text(
                       // "32",
-                      '${orderDetails.orderDate.split('-').last}',
+                      // orderDetails.orderDate.toString(),
+                      '${orderDetails.orderDate.split(',').last}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -330,8 +399,8 @@ class _OrderDetailState extends State<OrderDetail> {
                       ),
                     ),
                     Text(
-                      // 'Jul',
-                      '${setMonth(int.parse(orderDetails.orderDate.split('-')[1]))}',
+                      // orderDetails.orderDate.toString(),
+                      '${setMonth(int.parse(orderDetails.orderDate.split(',')[1]))}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -413,7 +482,8 @@ class _OrderDetailState extends State<OrderDetail> {
                       children: [
                         Text(
                           // '21',
-                          '${order.bookingDate!.split('-').last}',
+                          // order.bookingDate.toString(),
+                          '${order.bookingDate!.split(',').last}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -424,7 +494,9 @@ class _OrderDetailState extends State<OrderDetail> {
                         ),
                         Text(
                           // 'jul',
-                          '${setMonth(int.parse(order.bookingDate!.split('-')[1]))}',
+
+                          // order.bookingDate.toString(),
+                          '${setMonth(int.parse(order.bookingDate!.split(',')[1]))}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -526,7 +598,8 @@ class _PastOrderDetailsState extends State<PastOrderDetails> {
         ),
       ),
       child: FutureBuilder<OrderDetails>(
-        future: _orderProvider.orderDetails(order_id: widget.Order_id.toString()),
+        future:
+            _orderProvider.orderDetails(order_id: widget.Order_id.toString()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final data = snapshot.data;
@@ -614,7 +687,8 @@ class _PastOrderDetailsState extends State<PastOrderDetails> {
                                               scrollDirection: Axis.horizontal,
                                               shrinkWrap: true,
                                               itemCount: int.parse(
-                                                data.marchantRating.toStringAsFixed(0),
+                                                data.marchantRating
+                                                    .toStringAsFixed(0),
                                               ),
                                               itemBuilder: (context, subindex) {
                                                 return Icon(
@@ -627,7 +701,8 @@ class _PastOrderDetailsState extends State<PastOrderDetails> {
                                             shrinkWrap: true,
                                             itemCount: 5 -
                                                 int.parse(
-                                                  data.marchantRating.toStringAsFixed(0),
+                                                  data.marchantRating
+                                                      .toStringAsFixed(0),
                                                 ),
                                             itemBuilder: (context, subindex) {
                                               return Icon(
@@ -683,7 +758,10 @@ class _PastOrderDetailsState extends State<PastOrderDetails> {
                             ),
                             Text(
                               "PHONE",
-                              style: TextStyle(fontSize: 14, color: primaryColor, letterSpacing: 1),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: primaryColor,
+                                  letterSpacing: 1),
                             ),
                             Text(
                               '${data.phoneNum}',
@@ -1094,7 +1172,8 @@ class _PastOrderDetailsState extends State<PastOrderDetails> {
                   maxLines: 5,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(10),

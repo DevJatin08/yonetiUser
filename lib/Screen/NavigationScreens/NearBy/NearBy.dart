@@ -36,8 +36,6 @@ class _NearByScreenState extends State<NearByScreen> {
     await context.read(homeServiceProvider).getMerchantList();
     setState(() {
       _isLoading = false;
-
-      //print(_usersDisplay.length);
     });
   }
 
@@ -48,11 +46,12 @@ class _NearByScreenState extends State<NearByScreen> {
     final double itemWidth = size.width / 2.3;
     double cardWidth = MediaQuery.of(context).size.width / 3.3;
     double cardHeight = MediaQuery.of(context).size.height / 3.6;
-   print('-----$_isLoading----');
+    print('-----$_isLoading----');
     return Scaffold(
         body: _isLoading
             ? LoadingWidget()
-            : _homeServiceInfoProvider.homeMerchantCategory.marchantDetails!.isEmpty
+            : _homeServiceInfoProvider
+                    .homeMerchantCategory.marchantDetails!.isEmpty
                 ? Center(
                     child: Text("No data"),
                   )
@@ -62,7 +61,8 @@ class _NearByScreenState extends State<NearByScreen> {
                       children: [
                         AppbarWithIcon(
                           backButton: true,
-                          title: '${_homeServiceInfoProvider.categoryName} - Nearby',
+                          title:
+                              '${_homeServiceInfoProvider.categoryName} - Nearby',
                           onTap: () {
                             setState(() {
                               Search = true;
@@ -118,12 +118,15 @@ class _NearByScreenState extends State<NearByScreen> {
                           ),
                           icosubIcons: Container(
                             decoration: BoxDecoration(
-                                color: Color(0xff173143), borderRadius: BorderRadius.circular(10)),
+                                color: Color(0xff173143),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
                               child: Text(
                                 '1823',
-                                style: TextStyle(fontSize: 9, color: Colors.white),
+                                style:
+                                    TextStyle(fontSize: 9, color: Colors.white),
                               ),
                             ),
                           ),
@@ -144,15 +147,22 @@ class _NearByScreenState extends State<NearByScreen> {
                                             itemCount: Search
                                                 ? _usersDisplay!.length
                                                 : _homeServiceInfoProvider
-                                                    .homeMerchantCategory.marchantDetails!.length,
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                childAspectRatio: (itemWidth / gridCardHeight),
-                                                crossAxisCount: 2),
-                                            itemBuilder: (BuildContext context, int index) {
+                                                    .homeMerchantCategory
+                                                    .marchantDetails!
+                                                    .length,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    childAspectRatio:
+                                                        (itemWidth /
+                                                            gridCardHeight),
+                                                    crossAxisCount: 2),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
                                               return new GridViewCard(
                                                 marchantDetail: Search
                                                     ? _usersDisplay![index]
-                                                    : _homeServiceInfoProvider.homeMerchantCategory
+                                                    : _homeServiceInfoProvider
+                                                        .homeMerchantCategory
                                                         .marchantDetails![index],
                                                 // featured: index < 3 ? true : false,
                                                 leftPadding: standardPadding,
@@ -164,16 +174,22 @@ class _NearByScreenState extends State<NearByScreen> {
                                         itemCount: Search
                                             ? _usersDisplay!.length
                                             : _homeServiceInfoProvider
-                                                .homeMerchantCategory.marchantDetails!.length,
-                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: (itemWidth / gridCardHeight),
-                                            crossAxisCount: 2),
-                                        itemBuilder: (BuildContext context, int index) {
+                                                .homeMerchantCategory
+                                                .marchantDetails!
+                                                .length,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                childAspectRatio: (itemWidth /
+                                                    gridCardHeight),
+                                                crossAxisCount: 2),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
                                           return new GridViewCard(
                                             marchantDetail: Search
                                                 ? _usersDisplay![index]
                                                 : _homeServiceInfoProvider
-                                                    .homeMerchantCategory.marchantDetails![index],
+                                                    .homeMerchantCategory
+                                                    .marchantDetails![index],
                                             // featured: index < 3 ? true : false,
                                             leftPadding: standardPadding,
                                             rightPadding: standardPadding,
@@ -181,7 +197,8 @@ class _NearByScreenState extends State<NearByScreen> {
                                         },
                                       )
                                 : Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 0),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 0),
                                     child: Search
                                         ? _usersDisplay!.isEmpty
                                             ? Center(
@@ -190,13 +207,18 @@ class _NearByScreenState extends State<NearByScreen> {
                                             : ListView.builder(
                                                 itemCount: Search
                                                     ? _usersDisplay!.length
-                                                    : _homeServiceInfoProvider.homeMerchantCategory
-                                                        .marchantDetails!.length,
-                                                itemBuilder: (BuildContext context, int index) {
+                                                    : _homeServiceInfoProvider
+                                                        .homeMerchantCategory
+                                                        .marchantDetails!
+                                                        .length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
                                                   return Container(
                                                     child: new ListViewCard(
                                                       marchantDetail: Search
-                                                          ? _usersDisplay![index]
+                                                          ? _usersDisplay![
+                                                              index]
                                                           : _homeServiceInfoProvider
                                                               .homeMerchantCategory
                                                               .marchantDetails![index],
@@ -208,8 +230,11 @@ class _NearByScreenState extends State<NearByScreen> {
                                             itemCount: Search
                                                 ? _usersDisplay!.length
                                                 : _homeServiceInfoProvider
-                                                    .homeMerchantCategory.marchantDetails!.length,
-                                            itemBuilder: (BuildContext context, int index) {
+                                                    .homeMerchantCategory
+                                                    .marchantDetails!
+                                                    .length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
                                               return Container(
                                                 child: new ListViewCard(
                                                   marchantDetail: Search
@@ -226,7 +251,6 @@ class _NearByScreenState extends State<NearByScreen> {
                         )
                       ],
                     ),
-                  )
-                  );
+                  ));
   }
 }

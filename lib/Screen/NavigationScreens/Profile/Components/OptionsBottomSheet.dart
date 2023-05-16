@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/AuthScreens/LoginScreen.dart';
@@ -44,11 +45,14 @@ class OptionsBottomSheet extends HookWidget {
                   print('sd');
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 20),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 5, bottom: 20),
                   child: Container(
                     width: 60,
                     height: 5,
-                    decoration: BoxDecoration(color: Color(0xff9d9d9d), borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(
+                        color: Color(0xff9d9d9d),
+                        borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
               ),
@@ -92,17 +96,22 @@ class OptionsBottomSheet extends HookWidget {
                               );
                             },
                             child: Container(
-                              decoration: BoxDecoration(color: Color(0xff454545), borderRadius: BorderRadius.circular(5)),
+                              decoration: BoxDecoration(
+                                  color: Color(0xff454545),
+                                  borderRadius: BorderRadius.circular(5)),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 8),
                                 child: Text(
                                   'History',
-                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
                                 ),
                               ),
                             ),
                           ),
-                          url: 'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
+                          url:
+                              'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
                           extraImage: true,
                         );
                       },
@@ -264,7 +273,9 @@ class OptionsBottomSheet extends HookWidget {
               SingleOption(
                 icon: Icons.logout_outlined,
                 title: "Sign Out",
-                onTap: () {
+                onTap: () async {
+                  sharedPreferences = await SharedPreferences.getInstance();
+                  sharedPreferences.clear();
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => LoginScreen(),
                   ));
@@ -287,7 +298,9 @@ class SingleOption extends StatelessWidget {
   final String title;
   final Function? onTap;
   final IconData icon;
-  const SingleOption({required this.icon, required this.title, this.onTap, Key? key}) : super(key: key);
+  const SingleOption(
+      {required this.icon, required this.title, this.onTap, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +312,11 @@ class SingleOption extends StatelessWidget {
       horizontalTitleGap: 10,
       title: Text(
         title,
-        style: TextStyle(color: thirdColor, fontFamily: 'bold', letterSpacing: .8, fontSize: 14),
+        style: TextStyle(
+            color: thirdColor,
+            fontFamily: 'bold',
+            letterSpacing: .8,
+            fontSize: 14),
       ),
       leading: Icon(icon),
       trailing: Icon(Icons.chevron_right_outlined),

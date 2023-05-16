@@ -15,6 +15,7 @@ import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 import 'package:userapp/Screen/NavigationScreens/Order/OrderDetail.dart';
 import 'package:userapp/Screen/NavigationScreens/Profile/Components/OptionsBottomSheet.dart';
+import 'package:userapp/Screen/NavigationScreens/Profile/Components/Schedule.dart';
 import 'package:userapp/Services/Services/ImagePickerConvertor.dart';
 import 'package:userapp/Services/Services/UserService.dart';
 import 'package:userapp/main.dart';
@@ -157,8 +158,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                         children: [
                           Container(
                             height: 300,
-                            // height: 350,
-                            // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
                             child: Stack(
                               children: [
                                 InkWell(
@@ -193,575 +192,308 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   ),
                                 ),
                                 Positioned(
-                                  left: sideSpacing * size.width,
+                                  left: 0,
+                                  right: 0,
                                   top: 130,
                                   child: Container(
+                                    height: 155,
                                     width: size.width * 0.85,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: primaryColor,
+                                      ),
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
                                     child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        Container(
-                                          height: 155,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: primaryColor,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(25),
+                                        Text(
+                                          (userProvider.userData.fullname !=
+                                                      null &&
+                                                  userProvider
+                                                          .userData.fullname !=
+                                                      '')
+                                              ? userProvider.userData.fullname!
+                                              : 'No Name',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: thirdColor,
+                                              fontSize: 24,
+                                              fontFamily: 'bold',
+                                              letterSpacing: 1),
+                                        ),
+                                        SizedBox(
+                                          height: 2,
+                                        ),
+                                        SizedBox(
+                                          width: size.width * 0.50,
+                                          child: Text(
+                                            (userProvider.userData.address !=
+                                                        null &&
+                                                    userProvider
+                                                            .userData.address !=
+                                                        '')
+                                                ? (userProvider
+                                                    .userData.address!.street!)
+                                                : 'No Address',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: thirdColor,
+                                                fontSize: 10,
+                                                letterSpacing: .5),
                                           ),
                                         ),
-                                        // Container(
-                                        //   height: 50,
-                                        //   width: size.width * .6,
-                                        //   decoration: BoxDecoration(
-                                        //     color: primaryColor,
-                                        //     borderRadius: BorderRadius.only(
-                                        //       bottomLeft: Radius.circular(20),
-                                        //       bottomRight: Radius.circular(20),
-                                        //     ),
-                                        //   ),
-                                        //   child: Row(
-                                        //     children: [
-                                        //       Expanded(
-                                        //           child: Column(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           Text(
-                                        //             "${ userProvider.userData.}",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontFamily: 'bold',
-                                        //                 fontSize: 22),
-                                        //           ),
-                                        //           Text(
-                                        //             "Reviews",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w400,
-                                        //                 fontSize: 10),
-                                        //           )
-                                        //         ],
-                                        //       )),
-                                        //       Expanded(
-                                        //           child: Column(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           Text(
-                                        //             "258",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontFamily: 'bold',
-                                        //                 fontSize: 22),
-                                        //           ),
-                                        //           Text(
-                                        //             "Bookmarks",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w400,
-                                        //                 fontSize: 10),
-                                        //           )
-                                        //         ],
-                                        //       )),
-                                        //       Expanded(
-                                        //           child: Column(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           Text(
-                                        //             "300",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontFamily: 'bold',
-                                        //                 fontSize: 22),
-                                        //           ),
-                                        //           Text(
-                                        //             "Likes",
-                                        //             style: TextStyle(
-                                        //                 color: Colors.white,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w400,
-                                        //                 fontSize: 10),
-                                        //           )
-                                        //         ],
-                                        //       )),
-                                        //     ],
-                                        //   ),
-                                        // )
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            userProvider.userData.userBio
+                                                .toString(),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff3d526a),
+                                                letterSpacing: 1),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
-
                                 Positioned(
-                                    left: size.width * .075,
-                                    top: 70,
-                                    child: Container(
-                                      // color: Colors.teal,
-                                      // width: size.width * .7,
-                                      // height: size.height * .25,
-                                      height: 200,
-                                      width: size.width * .85,
-
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.transparent,
-                                      //   border: Border.all(
-                                      //     color: secondaryColor,
-                                      //   ),
-                                      //   borderRadius: BorderRadius.circular(25),
-                                      // ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: size.width * .04),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 120,
-                                              child: Row(
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      avatarBottomSheet(
-                                                          'Avatar',
-                                                          userProvider);
-                                                    },
-                                                    child: Container(
-                                                      width: 110,
-                                                      height: 120,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15)),
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        child: Image.network(
-                                                          userProvider
-                                                              .userData.avatar
-                                                              .toString(),
-                                                          fit: BoxFit.cover,
-                                                          errorBuilder:
-                                                              (context, error,
-                                                                  stackTrace) {
-                                                            return Image
-                                                                .network(
-                                                              defaultCover,
-                                                              fit: BoxFit.cover,
-                                                            );
-                                                          },
-                                                          // loadingBuilder: (context, child,
-                                                          //     loadingProgress) {
-                                                          //   return loadingWidget();
-                                                          // },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          userProvider
-                                                              .userData.fullname
-                                                              .toString(),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xff42566d),
-                                                              fontSize: 24,
-                                                              fontFamily:
-                                                                  'bold',
-                                                              letterSpacing: 1),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 2,
-                                                        ),
-                                                        Text(
-                                                          userProvider
-                                                              .userData.fullname
-                                                              .toString(),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                              color: thirdColor,
-                                                              fontSize: 10,
-                                                              letterSpacing:
-                                                                  .5),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                  left: 50,
+                                  top: 100,
+                                  child: Container(
+                                    height: 120,
+                                    child: Row(children: [
+                                      InkWell(
+                                        onTap: () {
+                                          avatarBottomSheet(
+                                              'Avatar', userProvider);
+                                        },
+                                        child: Container(
+                                          width: 110,
+                                          height: 120,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: Image.network(
+                                              userProvider.userData.avatar
+                                                  .toString(),
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.network(
+                                                  defaultCover,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                              // loadingBuilder: (context, child,
+                                              //     loadingProgress) {
+                                              //   return loadingWidget();
+                                              // },
                                             ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            Container(
-                                              height: 45,
-                                              child: Text(
-                                                userProvider.userData.userBio
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xff3d526a),
-                                                    letterSpacing: 1),
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            // Align(
-                                            //   alignment: Alignment.center,
-                                            //   child: Row(
-                                            //     mainAxisAlignment:
-                                            //         MainAxisAlignment.center,
-                                            //     children: [
-                                            //       Icon(
-                                            //         Icons.launch_outlined,
-                                            //         size: 12,
-                                            //         color: primaryColor,
-                                            //       ),
-                                            //       Text(
-                                            //         userProvider
-                                            //             .userData.website
-                                            //             .toString(),
-                                            //         style: TextStyle(
-                                            //             fontSize: 14,
-                                            //             color: thirdColor),
-                                            //         textAlign: TextAlign.center,
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    )),
-                                // Positioned(
-                                //   left: size.width * .15,
-                                //   top: size.height * .2,
-                                //   child: Container(
-                                //     width: size.width * .18,
-                                //     height: size.height * .15,
-                                //     color: Colors.teal,
-                                //   ),
-                                // )
+                                    ]),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          // if (!stickyTitle)
-                          //   Container(
-                          //     height: 350,
-                          //     // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-                          //     child: Stack(
-                          //       children: [
-                          //         InkWell(
-                          //           onTap: () {
-                          //             coverBottomSheet('Update cover', userProvider);
-                          //           },
-                          //           child: Container(
-                          //             width: size.width,
-                          //             height: 200,
-                          //             decoration: BoxDecoration(
-                          //                 image: DecorationImage(
-                          //                     image: NetworkImage(
-                          //                       defaultCover,
-                          //                     ),
-                          //                     fit: BoxFit.cover)),
-                          //             child: Image.network(
-                          //               userProvider.userData.coverPhoto.toString(),
-                          //               fit: BoxFit.cover,
-                          //               errorBuilder: (context, error, stackTrace) {
-                          //                 return Image.network(
-                          //                   defaultCover,
-                          //                   fit: BoxFit.cover,
-                          //                 );
-                          //               },
-                          //               // loadingBuilder: (context, child, loadingProgress) {
-                          //               //   return loadingWidget();
-                          //               // },
-                          //             ),
+                          // Container(
+                          //   height: 300,
+                          //   // height: 350,
+                          //   // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+                          //   child: Stack(
+                          //     children: [
+                          //       InkWell(
+                          //         onTap: () {
+                          //           coverBottomSheet(
+                          //               'Update Cover', useProvider);
+                          //         },
+                          //         child: Container(
+                          //           width: size.width,
+                          //           height: 200,
+                          //           decoration: BoxDecoration(
+                          //               image: DecorationImage(
+                          //                   image: NetworkImage(
+                          //                     defaultCover,
+                          //                   ),
+                          //                   fit: BoxFit.cover)),
+                          //           child: Image.network(
+                          //             useProvider.userData.coverPhoto
+                          //                 .toString(),
+                          //             fit: BoxFit.cover,
+                          //             errorBuilder:
+                          //                 (context, error, stackTrace) {
+                          //               return Image.network(
+                          //                 defaultCover,
+                          //                 fit: BoxFit.cover,
+                          //               );
+                          //             },
+                          //             // loadingBuilder: (context, child, loadingProgress) {
+                          //             //   return loadingWidget();
+                          //             // },
                           //           ),
                           //         ),
-                          //         Positioned(
-                          //           left: sideSpacing * size.width,
-                          //           top: 130,
+                          //       ),
+                          //       Positioned(
+                          //         left: sideSpacing * size.width,
+                          //         top: 130,
+                          //         child: Column(
+                          //           children: [
+                          //             Container(
+                          //               height: 155,
+                          //               width: size.width * 0.85,
+                          //               decoration: BoxDecoration(
+                          //                 color: Colors.white,
+                          //                 border: Border.all(
+                          //                   color: primaryColor,
+                          //                 ),
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(25),
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //       Positioned(
+                          //           left: 70,
+                          //           top: 70,
                           //           child: Container(
-                          //             width: size.width * 0.85,
+                          //             height: 200,
+                          //             width: size.width * .85,
                           //             child: Column(
+                          //               crossAxisAlignment:
+                          //                   CrossAxisAlignment.start,
                           //               children: [
                           //                 Container(
-                          //                   height: 155,
-                          //                   decoration: BoxDecoration(
-                          //                     color: Colors.white,
-                          //                     border: Border.all(
-                          //                       color: primaryColor,
-                          //                     ),
-                          //                     borderRadius: BorderRadius.circular(25),
-                          //                   ),
-                          //                 ),
-                          //                 Container(
-                          //                   height: 50,
-                          //                   width: size.width * .6,
-                          //                   decoration: BoxDecoration(
-                          //                     color: primaryColor,
-                          //                     borderRadius: BorderRadius.only(
-                          //                       bottomLeft: Radius.circular(20),
-                          //                       bottomRight: Radius.circular(20),
-                          //                     ),
-                          //                   ),
+                          //                   height: 120,
                           //                   child: Row(
                           //                     children: [
-                          //                       Expanded(
-                          //                           child: Column(
-                          //                         mainAxisAlignment:
-                          //                             MainAxisAlignment.center,
-                          //                         children: [
-                          //                           Text(
-                          //                             "758",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontFamily: 'bold',
-                          //                                 fontSize: 22),
+                          //                       InkWell(
+                          //                         onTap: () {
+                          //                           avatarBottomSheet(
+                          //                               'Avatar', useProvider);
+                          //                         },
+                          //                         child: Container(
+                          //                           width: 110,
+                          //                           height: 120,
+                          //                           decoration: BoxDecoration(
+                          //                               borderRadius:
+                          //                                   BorderRadius
+                          //                                       .circular(15)),
+                          //                           child: ClipRRect(
+                          //                             borderRadius:
+                          //                                 BorderRadius.circular(
+                          //                                     15),
+                          //                             child: Image.network(
+                          //                               useProvider
+                          //                                   .userData.avatar
+                          //                                   .toString(),
+                          //                               fit: BoxFit.cover,
+                          //                               errorBuilder: (context,
+                          //                                   error, stackTrace) {
+                          //                                 return Image.network(
+                          //                                   defaultCover,
+                          //                                   fit: BoxFit.cover,
+                          //                                 );
+                          //                               },
+                          //                               // loadingBuilder: (context, child,
+                          //                               //     loadingProgress) {
+                          //                               //   return loadingWidget();
+                          //                               // },
+                          //                             ),
                           //                           ),
-                          //                           Text(
-                          //                             "Reviews",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontWeight: FontWeight.w400,
-                          //                                 fontSize: 10),
-                          //                           )
-                          //                         ],
-                          //                       )),
+                          //                         ),
+                          //                       ),
                           //                       Expanded(
-                          //                           child: Column(
-                          //                         mainAxisAlignment:
-                          //                             MainAxisAlignment.center,
-                          //                         children: [
-                          //                           Text(
-                          //                             "258",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontFamily: 'bold',
-                          //                                 fontSize: 22),
-                          //                           ),
-                          //                           Text(
-                          //                             "Bookmarks",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontWeight: FontWeight.w400,
-                          //                                 fontSize: 10),
-                          //                           )
-                          //                         ],
-                          //                       )),
-                          //                       Expanded(
-                          //                           child: Column(
-                          //                         mainAxisAlignment:
-                          //                             MainAxisAlignment.center,
-                          //                         children: [
-                          //                           Text(
-                          //                             "300",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontFamily: 'bold',
-                          //                                 fontSize: 22),
-                          //                           ),
-                          //                           Text(
-                          //                             "Likes",
-                          //                             style: TextStyle(
-                          //                                 color: Colors.white,
-                          //                                 fontWeight: FontWeight.w400,
-                          //                                 fontSize: 10),
-                          //                           )
-                          //                         ],
-                          //                       )),
+                          //                         child: Column(
+                          //                           mainAxisAlignment:
+                          //                               MainAxisAlignment.start,
+                          //                           crossAxisAlignment:
+                          //                               CrossAxisAlignment
+                          //                                   .start,
+                          //                           children: [
+                          //                             Text(
+                          //                               useProvider.userData
+                          //                                       .fullname ??
+                          //                                   'No Name',
+                          //                               maxLines: 1,
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                               style: TextStyle(
+                          //                                   color: Colors.black,
+                          //                                   fontSize: 24,
+                          //                                   fontFamily: 'bold',
+                          //                                   letterSpacing: 1),
+                          //                             ),
+                          //                             SizedBox(
+                          //                               height: 2,
+                          //                             ),
+                          //                             Text(
+                          //                               useProvider.userData
+                          //                                       .fullname ??
+                          //                                   'No',
+                          //                               maxLines: 1,
+                          //                               overflow: TextOverflow
+                          //                                   .ellipsis,
+                          //                               style: TextStyle(
+                          //                                   color: thirdColor,
+                          //                                   fontSize: 10,
+                          //                                   letterSpacing: .5),
+                          //                             ),
+                          //                           ],
+                          //                         ),
+                          //                       )
                           //                     ],
                           //                   ),
-                          //                 )
+                          //                 ),
+                          //                 SizedBox(
+                          //                   height: 8,
+                          //                 ),
+                          //                 Container(
+                          //                   height: 45,
+                          //                   child: Text(
+                          //                     useProvider.userData.userBio
+                          //                         .toString(),
+                          //                     style: TextStyle(
+                          //                         fontSize: 12,
+                          //                         color: Color(0xff3d526a),
+                          //                         letterSpacing: 1),
+                          //                     maxLines: 3,
+                          //                     overflow: TextOverflow.ellipsis,
+                          //                     textAlign: TextAlign.center,
+                          //                   ),
+                          //                 ),
+                          //                 SizedBox(
+                          //                   height: 8,
+                          //                 ),
                           //               ],
                           //             ),
-                          //           ),
-                          //         ),
-                          //
-                          //         Positioned(
-                          //             left: size.width * .075,
-                          //             top: 70,
-                          //             child: Container(
-                          //               // color: Colors.teal,
-                          //               // width: size.width * .7,
-                          //               // height: size.height * .25,
-                          //               height: 200,
-                          //               width: size.width * .85,
-                          //
-                          //               // decoration: BoxDecoration(
-                          //               //   color: Colors.transparent,
-                          //               //   border: Border.all(
-                          //               //     color: secondaryColor,
-                          //               //   ),
-                          //               //   borderRadius: BorderRadius.circular(25),
-                          //               // ),
-                          //               child: Padding(
-                          //                 padding: EdgeInsets.symmetric(
-                          //                     horizontal: size.width * .04),
-                          //                 child: Column(
-                          //                   crossAxisAlignment:
-                          //                       CrossAxisAlignment.center,
-                          //                   children: [
-                          //                     Container(
-                          //                       height: 120,
-                          //                       child: Row(
-                          //                         children: [
-                          //                           InkWell(
-                          //                             onTap: () {
-                          //                               avatarBottomSheet(
-                          //                                   'Update Avater',
-                          //                                   userProvider);
-                          //                             },
-                          //                             child: Container(
-                          //                               width: 110,
-                          //                               height: 120,
-                          //                               decoration: BoxDecoration(
-                          //
-                          //                                   // image: DecorationImage(
-                          //                                   //     fit: BoxFit.cover,
-                          //                                   //     image: NetworkImage(
-                          //                                   //       "https://images.unsplash.com/photo-1524230616393-d6229fcd2eff?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-                          //                                   //     )),
-                          //                                   borderRadius:
-                          //                                       BorderRadius.circular(
-                          //                                           10)),
-                          //                               child: ClipRRect(
-                          //                                 borderRadius:
-                          //                                     BorderRadius.circular(
-                          //                                         10),
-                          //                                 child: NetworkImages(
-                          //                                   url: userProvider
-                          //                                       .userData.avatar!,
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ),
-                          //                           SizedBox(
-                          //                             width: 10,
-                          //                           ),
-                          //                           Expanded(
-                          //                             child: Column(
-                          //                               mainAxisAlignment:
-                          //                                   MainAxisAlignment.end,
-                          //                               crossAxisAlignment:
-                          //                                   CrossAxisAlignment.start,
-                          //                               children: [
-                          //                                 Text(
-                          //                                   userProvider
-                          //                                       .userData.fullname!,
-                          //                                   maxLines: 1,
-                          //                                   overflow:
-                          //                                       TextOverflow.ellipsis,
-                          //                                   style: TextStyle(
-                          //                                       color:
-                          //                                           Color(0xff42566d),
-                          //                                       fontSize: 24,
-                          //                                       fontFamily: 'bold',
-                          //                                       letterSpacing: 1),
-                          //                                 ),
-                          //                                 SizedBox(
-                          //                                   height: 2,
-                          //                                 ),
-                          //                                 Text(
-                          //                                   "58 Noel street, London UK",
-                          //                                   maxLines: 1,
-                          //                                   overflow:
-                          //                                       TextOverflow.ellipsis,
-                          //                                   style: TextStyle(
-                          //                                       color: thirdColor,
-                          //                                       fontSize: 10,
-                          //                                       letterSpacing: .5),
-                          //                                 ),
-                          //                               ],
-                          //                             ),
-                          //                           )
-                          //                         ],
-                          //                       ),
-                          //                     ),
-                          //                     SizedBox(
-                          //                       height: 8,
-                          //                     ),
-                          //                     Container(
-                          //                       height: 45,
-                          //                       child: Text(
-                          //                         userProvider.userData.userBio ?? "",
-                          //                         style: TextStyle(
-                          //                             fontSize: 12,
-                          //                             color: Color(0xff3d526a),
-                          //                             letterSpacing: 1),
-                          //                         maxLines: 3,
-                          //                         overflow: TextOverflow.ellipsis,
-                          //                         textAlign: TextAlign.center,
-                          //                       ),
-                          //                     ),
-                          //                     SizedBox(
-                          //                       height: 8,
-                          //                     ),
-                          //                     Align(
-                          //                       alignment: Alignment.center,
-                          //                       child: Row(
-                          //                         mainAxisAlignment:
-                          //                             MainAxisAlignment.center,
-                          //                         children: [
-                          //                           Icon(
-                          //                             Icons.launch_outlined,
-                          //                             size: 12,
-                          //                             color: thirdColor,
-                          //                           ),
-                          //                           Text(
-                          //                             userProvider.userData.website ??
-                          //                                 "",
-                          //                             style: TextStyle(
-                          //                                 fontSize: 14,
-                          //                                 color: thirdColor),
-                          //                             textAlign: TextAlign.center,
-                          //                           ),
-                          //                         ],
-                          //                       ),
-                          //                     ),
-                          //                   ],
-                          //                 ),
-                          //               ),
-                          //             )),
-                          //         // Positioned(
-                          //         //   left: size.width * .15,
-                          //         //   top: size.height * .2,
-                          //         //   child: Container(
-                          //         //     width: size.width * .18,
-                          //         //     height: size.height * .15,
-                          //         //     color: Colors.teal,
-                          //         //   ),
-                          //         // )
-                          //       ],
-                          //     ),
+                          //           )),
+                          //     ],
                           //   ),
+                          // ),
                           SizedBox(
                             height: 8,
                           ),
@@ -850,27 +582,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     children: [
                                       Expanded(
                                           child: TextFormField(
-                                              // onTap: () {
-                                              //   setState(() {
-                                              //     Search = true;
-                                              //   });
-                                              // },
-                                              // onChanged: (searchText) {
-                                              //   searchText =
-                                              //       searchText.toLowerCase();
-                                              //   setState(() {
-                                              //     _usersDisplay = _orderProvider
-                                              //         .pastOrderList
-                                              //         .pastBooking!
-                                              //         .where((u) {
-                                              //       var orderDetails = u
-                                              //           .orderDetails!
-                                              //           .toLowerCase();
-                                              //       return orderDetails
-                                              //           .contains(searchText);
-                                              //     }).toList();
-                                              //   });
-                                              // },
                                               decoration: InputDecoration(
                                         isCollapsed: true,
                                         suffixIcon: Icon(
@@ -912,22 +623,36 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      // InkWell(
-                                      //   onTap: () {
-                                      //     showModalBottomSheet(
-                                      //         isScrollControlled: false,
-                                      //         context: context,
-                                      //         builder: (context) {
-                                      //           return Schedule();
-                                      //         });
-                                      //   },
-                                      //   child: Image.asset(
-                                      //     'assets/images/filter.png',
-                                      //     color: primaryColor,
-                                      //     width: 30,
-                                      //     height: 30,
-                                      //   ),
-                                      // )
+                                      IconButton(
+                                        icon: Icon(Icons.filter_alt),
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                              isScrollControlled: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return Schedule(
+                                                  onTapList: (valueList) async {
+                                                    // _isLoading = true;
+                                                    await context.read(orderProvider)
+                                                        .pastOrder(
+                                                            startDate:
+                                                                valueList[0],
+                                                            endDate:
+                                                                valueList[1])
+                                                        .then((value) {
+                                                      setState(() {
+                                                        print(
+                                                            'called loaingData');
+                                                        // _isLoading = false;
+                                                        //print(_usersDisplay.length);
+                                                      });
+                                                    });
+                                                    print(valueList);
+                                                  },
+                                                );
+                                              });
+                                        },
+                                      ),
                                     ],
                                   ),
                                 )
@@ -965,82 +690,83 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 20,
                                                 8),
                                             child: GestureDetector(
-                                                onHorizontalDragUpdate: (v) {
-                                                  if (v.delta.dx.isNegative) {
-                                                    setState(() {
-                                                      selectedIndex = index;
-                                                    });
-                                                  } else {
-                                                    setState(() {
-                                                      selectedIndex = -1;
-                                                    });
-                                                  }
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: card(_orderProvider
-                                                          .activtOrderList
-                                                          .orders![index]),
-                                                    ),
-                                                    selectedIndex == index
-                                                        ? InkWell(
-                                                            onTap: () {
-                                                              log("jcbdhjcvdjhcv" +
-                                                                  _orderProvider
-                                                                      .activtOrderList
-                                                                      .orders![
-                                                                          index]
-                                                                      .toString());
-                                                              log("jcbdhjcvdjhcv ==" +
-                                                                  _orderProvider
-                                                                      .activtOrderList
-                                                                      .orders![
-                                                                          index]
-                                                                      .orderId
-                                                                      .toString());
+                                              onHorizontalDragUpdate: (v) {
+                                                if (v.delta.dx.isNegative) {
+                                                  setState(() {
+                                                    selectedIndex = index;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    selectedIndex = -1;
+                                                  });
+                                                }
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: card(_orderProvider
+                                                        .activtOrderList
+                                                        .orders![index]),
+                                                  ),
+                                                  selectedIndex == index
+                                                      ? InkWell(
+                                                          onTap: () {
+                                                            log("jcbdhjcvdjhcv" +
+                                                                _orderProvider
+                                                                    .activtOrderList
+                                                                    .orders![
+                                                                        index]
+                                                                    .toString());
+                                                            log("jcbdhjcvdjhcv ==" +
+                                                                _orderProvider
+                                                                    .activtOrderList
+                                                                    .orders![
+                                                                        index]
+                                                                    .orderId
+                                                                    .toString());
 
-                                                              showModalBottomSheet(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return Container(
-                                                                        child:
-                                                                            OrderDetail(
-                                                                      booking: _orderProvider
-                                                                          .activtOrderList
-                                                                          .orders![index],
-                                                                      Order_id: _orderProvider
-                                                                          .activtOrderList
-                                                                          .orders![
-                                                                              index]
-                                                                          .orderId,
-                                                                    ));
-                                                                  });
-                                                            },
-                                                            child: Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          8),
-                                                              child: Icon(
-                                                                _controller.index ==
-                                                                        0
-                                                                    ? Icons.sync
-                                                                    : Icons
-                                                                        .article,
-                                                                color:
-                                                                    cardSubTextColor,
-                                                              ),
+                                                            showModalBottomSheet(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return Container(
+                                                                      child:
+                                                                          OrderDetail(
+                                                                    booking: _orderProvider
+                                                                        .activtOrderList
+                                                                        .orders![index],
+                                                                    Order_id: _orderProvider
+                                                                        .activtOrderList
+                                                                        .orders![
+                                                                            index]
+                                                                        .orderId,
+                                                                  ));
+                                                                });
+                                                          },
+                                                          child: Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        8),
+                                                            child: Icon(
+                                                              _controller.index ==
+                                                                      0
+                                                                  ? Icons.sync
+                                                                  : Icons
+                                                                      .article,
+                                                              color:
+                                                                  cardSubTextColor,
                                                             ),
-                                                          )
-                                                        : SizedBox()
-                                                  ],
-                                                )),
+                                                          ),
+                                                        )
+                                                      : SizedBox()
+                                                ],
+                                              ),
+                                            ),
                                           );
                                         }),
                                   ),
@@ -1188,8 +914,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Center(
                     child: Text(
                       booking.bookingDate != null
-                          ? "${setMonth(int.parse(booking.bookingDate!.split('-')[1]))},${booking.bookingDate!.split('-').last}"
-                          : "${booking.date}",
+                          ? booking.bookingDate.toString()
+                          :
+                          //     ? "${setMonth(int.parse(booking.bookingDate!.split('-')[1]))},${booking.bookingDate!.split('-').last}"
+                          "${booking.date}",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -1339,7 +1067,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  void avatarBottomSheet(String title, UserService _userProvider) {
+  void avatarBottomSheet(String title, UserService _useProvider) {
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -1350,7 +1078,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 .pickImage(ImageSource.camera)
                 .then((value) async {
               poploading(context);
-              final res = await _userProvider.updateAvatar(value);
+              final res = await _useProvider.updateAvatar(value);
               if (res.statusCode!) {
                 await apiCall.sendNotification(
                   title: "Profile Image",
@@ -1366,7 +1094,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 .pickImage(ImageSource.gallery)
                 .then((value) async {
               poploading(context);
-              final res = await _userProvider.updateAvatar(value);
+              final res = await _useProvider.updateAvatar(value);
               if (res.statusCode!) {
                 await apiCall.sendNotification(
                   title: "Profile Image",
@@ -1382,7 +1110,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         });
   }
 
-  void coverBottomSheet(String title, UserService _userProvider) {
+  void coverBottomSheet(String title, UserService _useProvider) {
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -1393,7 +1121,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 .pickImage(ImageSource.camera)
                 .then((value) async {
               poploading(context);
-              final res = await _userProvider.updateCover(value);
+              final res = await _useProvider.updateCover(value);
 
               snackbar(res.message!, context);
               Navigator.pop(context);
@@ -1403,7 +1131,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 .pickImage(ImageSource.gallery)
                 .then((value) async {
               poploading(context);
-              final res = await _userProvider.updateCover(value);
+              final res = await _useProvider.updateCover(value);
 
               snackbar(res.message!, context);
               Navigator.pop(context);

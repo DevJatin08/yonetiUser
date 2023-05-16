@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+          "client_id": "753517877567-ikfr35v8orciukur0lmh1ofulnf5iae1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +27,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+              "client_id": "753517877567-ikfr35v8orciukur0lmh1ofulnf5iae1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "753517877567-e88leb18ledctm2n96ij5vi06ur68nv5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yoneti.business"
+              }
             }
           ]
         }
@@ -43,7 +50,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+          "client_id": "753517877567-ikfr35v8orciukur0lmh1ofulnf5iae1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -56,8 +63,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "753517877567-nbncfda24sjv4u4p1qvj250bun1reucr.apps.googleusercontent.com",
+              "client_id": "753517877567-ikfr35v8orciukur0lmh1ofulnf5iae1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "753517877567-e88leb18ledctm2n96ij5vi06ur68nv5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yoneti.business"
+              }
             }
           ]
         }

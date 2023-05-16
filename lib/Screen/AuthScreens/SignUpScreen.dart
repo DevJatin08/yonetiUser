@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,7 +16,11 @@ import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 import 'package:userapp/Screen/CommonWidgets/EditField.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
+import 'package:userapp/Screen/NavigationScreens/BaseScreen.dart';
 import 'package:userapp/main.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:google_sign_in/google_sign_in.dart' as ge;
 
 class SignUpScreen extends StatefulHookWidget {
   SignUpScreen({Key? key}) : super(key: key);
@@ -27,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectAccount = 0;
+  String? token;
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +75,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 30,
                 ),
                 AuthEditField(
-                  validator: (e) => 
-                 Validators.validateEmail(e),
+                  validator: (e) => Validators.validateEmail(e),
                   // e!.isEmpty ? "Enter the email address" : null
-                  
+
                   controller: emailController,
                   inputDecoration: authInputDecoration,
                   hint: 'Email',
@@ -78,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: size.height * 0.03,
                 ),
                 AuthEditField(
-                validator: (e) => Validators.validatePassword(e),
+                  validator: (e) => Validators.validatePassword(e),
                   suffix: true,
                   controller: passwordController,
                   inputDecoration: authInputDecoration,
@@ -148,18 +156,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               //         builder: (_) => LoginScreen()));
                             },
                           text: 'Login',
-                          style: TextStyle(fontFamily: 'bold', fontSize: 16, color: primaryColor),
+                          style: TextStyle(
+                              fontFamily: 'bold',
+                              fontSize: 16,
+                              color: primaryColor),
                         ),
                       ]),
                 ),
                 SizedBox(
                   height: size.height * 0.02,
                 ),
-                customBtn('Facebook', () {}, FontAwesomeIcons.facebook),
+                customBtn('Facebook', () {
+                  facebookLogin(context, useProvider);
+                }, FontAwesomeIcons.facebook),
                 SizedBox(
                   height: size.height * 0.02,
                 ),
-                customBtn('Google', () {}, FontAwesomeIcons.google),
+                customBtn('Google', () async {
+                  await signInWithGoogle().then((value) async {
+                    poploading(context);
+                    ResponseData responseData =
+                        await userProvider.callSocialLogin(value.user!.email!,
+                            value.user!.uid, 'Google', fcmToken.toString(), '');
+                    if (responseData.statusCode!) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => BaseHomeWidget()));
+                    } else {
+                      snackbar(responseData.message!, context);
+                    }
+                  });
+                }, FontAwesomeIcons.google),
                 SizedBox(
                   height: size.height * 0.05,
                 ),
@@ -171,33 +197,117 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget customBtn(String serviceProvider, VoidCallback callback, IconData iconData) {
+  Future<auth.UserCredential> signInWithGoogle() async {
+    auth.User googleauthUser;
+    final ge.GoogleSignInAccount? googleUser = await ge.GoogleSignIn().signIn();
+    final ge.GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final credential = auth.GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    await auth.FirebaseAuth.instance
+        .signInWithCredential(credential)
+        .whenComplete(() async => {
+              googleauthUser = auth.FirebaseAuth.instance.currentUser!,
+            });
+
+    return await auth.FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Widget customBtn(
+      String serviceProvider, VoidCallback callback, IconData iconData) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      width: size.width * buttonWidth,
-      height: size.width * 0.13,
-      decoration:
-          BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(button_radius)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: size.width * 0.04,
-          ),
-          Icon(
-            iconData,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: size.width * 0.04,
-          ),
-          Text(
-            "Continue With ${serviceProvider}",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
-          ),
-        ],
+    return InkWell(
+      onTap: callback,
+      child: Container(
+        width: size.width * buttonWidth,
+        height: size.width * 0.13,
+        decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(button_radius)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: size.width * 0.04,
+            ),
+            Icon(
+              iconData,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: size.width * 0.04,
+            ),
+            Text(
+              "Continue With ${serviceProvider}",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 16),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> facebookLogin(context, useProvider) async {
+    // await FacebookAuth.instance.logOut();
+    FirebaseMessaging.instance.getToken().then((value) {
+      token = value;
+    });
+    final LoginResult result = await FacebookAuth.instance.login(permissions: [
+      'email',
+      'public_profile',
+    ], loginBehavior: LoginBehavior.webOnly);
+
+    switch (result.status) {
+      case LoginStatus.success:
+        final AccessToken accessToken = result.accessToken!;
+
+        final graphResponse = await http.get(Uri.parse(
+            'https://graph.facebook.com/v3.3/me?fields=name,picture,friends,email&access_token=${accessToken.token}'));
+        final profile = json.decode(graphResponse.body);
+
+        poploading(context);
+        ResponseData responseData = await useProvider.callSocialLogin(
+            profile['email'].toString(),
+            profile['id'].toString(),
+            'Facebook',
+            fcmToken.toString(),
+            '');
+        Navigator.pop(context);
+        if (responseData.statusCode!) {
+          Navigator.pop(context);
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => BaseHomeWidget()));
+        } else {
+          snackbar(responseData.message!, context);
+        }
+        // facebookLoginApi(
+        //     context: context,
+        //     accessToken: accessToken.token,
+        //     providerid: profile['id'].toString(),
+        //     email: profile['email'].toString(),
+        //     firstname: profile['name'].toString(),
+        //     deviceToken: token);
+
+        break;
+      case LoginStatus.cancelled:
+        snackbar('Facebook login cancelled by user', context);
+
+        break;
+      case LoginStatus.failed:
+        snackbar('Login Failed', context);
+
+        break;
+      case LoginStatus.operationInProgress:
+        snackbar('Facebook login is in progress!', context);
+
+        break;
+    }
   }
 }

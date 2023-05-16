@@ -32,7 +32,10 @@ class _MyReviewsState extends State<MyReviews> {
                       ? Center(
                           child: Text(
                             "No Reviews",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
                           ),
                         )
                       : ListView.builder(
@@ -40,7 +43,8 @@ class _MyReviewsState extends State<MyReviews> {
                           scrollDirection: Axis.vertical,
                           itemBuilder: (context, index) {
                             return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 30),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2.0, horizontal: 30),
                                 child: Column(
                                   children: [
                                     Row(
@@ -53,7 +57,8 @@ class _MyReviewsState extends State<MyReviews> {
                                                 children: [
                                                   CircleAvatar(
                                                     radius: 20,
-                                                    backgroundImage: NetworkImage('data.allReviews[index].avatar'),
+                                                    backgroundImage: NetworkImage(
+                                                        'data.allReviews[index].avatar'),
                                                   ),
                                                   // Container(
                                                   //   width: 15,
@@ -72,14 +77,18 @@ class _MyReviewsState extends State<MyReviews> {
                                                 ],
                                               ),
                                               Container(
-                                                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 15),
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      data.allReviews[index].reviewedBy,
+                                                      data.allReviews[index]
+                                                          .reviewedBy,
                                                       style: TextStyle(
-                                                        fontSize: 15,
+                                                        fontSize: 18,
                                                         color: Colors.white,
                                                         fontFamily: 'bold',
                                                       ),
@@ -87,21 +96,30 @@ class _MyReviewsState extends State<MyReviews> {
                                                     Container(
                                                       width: size.width / 1.5,
                                                       child: Text(
-                                                        data.allReviews[index].comments,
+                                                        data.allReviews[index]
+                                                            .comments,
                                                         maxLines: 5,
-                                                        overflow: TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: TextStyle(
                                                           fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w600,
                                                           color: Colors.white,
                                                         ),
                                                       ),
                                                     ),
                                                     RichText(
                                                         text: TextSpan(
-                                                            text: data.allReviews[index].date.toString(),
+                                                            text: data
+                                                                .allReviews[
+                                                                    index]
+                                                                .date
+                                                                .toString(),
                                                             style: TextStyle(
                                                               fontSize: 11,
-                                                              color: Colors.grey,
+                                                              color:
+                                                                  Colors.white,
                                                             ),
                                                             children: [
                                                           // TextSpan(

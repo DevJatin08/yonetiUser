@@ -11,7 +11,8 @@ class UserService extends ChangeNotifier {
   UserData userData = UserData();
   APICall apiCall = APICall();
   bool isLogin = false;
-  ResponseData defaultErrorResponse = ResponseData(message: 'object', statusCode: false);
+  ResponseData defaultErrorResponse =
+      ResponseData(message: 'object', statusCode: false);
 
   UserService() {
     intialize();
@@ -20,7 +21,8 @@ class UserService extends ChangeNotifier {
   intialize() async {
     // sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.containsKey(userinfo_key)) {
-      Map<String, dynamic> map = jsonDecode(sharedPreferences.getString(userinfo_key)!);
+      Map<String, dynamic> map =
+          jsonDecode(sharedPreferences.getString(userinfo_key)!);
       // get userInfo from Shared Preference
       UserData spUserData = UserData.fromJson(map);
       // refetch data from api
@@ -51,8 +53,8 @@ class UserService extends ChangeNotifier {
       ResponseData responseData = ResponseData.fromJson(res);
       if (responseData.statusCode!) {
         userData = UserData.fromJson(res['result']);
-        spHepler.setPref(
-            userinfo_key, jsonEncode(userData.toJson())); // TODO: remove line after testing
+        spHepler.setPref(userinfo_key,
+            jsonEncode(userData.toJson())); // TODO: remove line after testing
         spHepler.setPref(userinfo_key, jsonEncode(userData.toJson()));
         await apiCall.apiSendOTP(userData.userId!, userData.sessionId!);
       }
@@ -71,9 +73,34 @@ class UserService extends ChangeNotifier {
     String devicetoken,
   ) async {
     try {
-      final res = await apiCall.apiSignIn(email, password, phoneNumber, devicetoken);
+      final res =
+          await apiCall.apiSignIn(email, password, phoneNumber, devicetoken);
       ResponseData responseData = ResponseData.fromJson(res);
 
+      return responseData;
+    } catch (e) {
+      print('callSignIn error = ${e}');
+      return defaultErrorResponse;
+    }
+  }
+
+  Future<ResponseData> callSocialLogin(
+    String email,
+    String token,
+    String socialType,
+    String devicetoken,
+    String deviceId,
+  ) async {
+    try {
+      final res = await apiCall.apiSocialLogin(
+          email, token, socialType, devicetoken, deviceId);
+      ResponseData responseData = ResponseData.fromJson(res);
+      isLogin = responseData.statusCode!;
+      if (responseData.statusCode!) {
+        userData = UserData.fromJson(res['result']);
+        spHepler.setPref(userinfo_key, jsonEncode(userData.toJson()));
+      }
+      notifyListeners();
       return responseData;
     } catch (e) {
       print('callSignIn error = ${e}');
@@ -138,7 +165,8 @@ class UserService extends ChangeNotifier {
     String email,
   ) async {
     try {
-      final res = await apiCall.apiSendForgotPasswordEmail(email, userData.sessionId.toString());
+      final res = await apiCall.apiSendForgotPasswordEmail(
+          email, userData.sessionId.toString());
       ResponseData responseData = ResponseData.fromJson(res);
 
       return responseData;
@@ -186,7 +214,8 @@ class UserService extends ChangeNotifier {
     String gender,
   ) async {
     try {
-      final res = await apiCall.apiUpdateUserInfo(name, "", userBio, dob, gender);
+      final res =
+          await apiCall.apiUpdateUserInfo(name, "", userBio, dob, gender);
       ResponseData responseData = ResponseData.fromJson(res);
       isLogin = responseData.statusCode!;
       if (responseData.statusCode!) {

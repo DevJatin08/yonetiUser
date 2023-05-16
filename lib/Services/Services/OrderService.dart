@@ -41,14 +41,21 @@ class OrderSrervice extends ChangeNotifier {
     }
   }
 
-  Future pastOrder() async {
+  Future pastOrder({String? startDate, String? endDate}) async {
     pastOrderList = PastOrder(pastBooking: []);
-    final res = await apiCall.apiGetPastBookings();
+    final res = await apiCall.apiGetPastBookings(
+        startDate: startDate, endDate: endDate);
     ResponseData responseData = ResponseData.fromJson(res);
     if (responseData.statusCode!) {
       pastOrderList = PastOrder.fromJson(res['result']);
       notifyListeners();
     }
+  }
+
+  Future getCancelOrders({required String order_id}) async {
+    final res = await apiCall.apicancelOrders(order_id: order_id);
+    ResponseData responseData = ResponseData.fromJson(res);
+    notifyListeners();
   }
 
   Future<OrderDetails> orderDetails({required String order_id}) async {

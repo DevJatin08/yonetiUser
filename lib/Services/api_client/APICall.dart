@@ -17,7 +17,8 @@ class APICall {
     dio.options.headers['Content-Type'] = 'application/json';
     dio.options.headers["accesskey"] = "b8d7996ea3557791aba04cf51a0654b2";
     if (sharedPreferences.containsKey(userinfo_key)) {
-      Map<String, dynamic> map = jsonDecode(sharedPreferences.getString(userinfo_key)!);
+      Map<String, dynamic> map =
+          jsonDecode(sharedPreferences.getString(userinfo_key)!);
       _userData = UserData.fromJson(map);
 
       dio.options.headers["sessionid"] = _userData.sessionId;
@@ -25,7 +26,11 @@ class APICall {
   }
 
   ///Send Notofication API
-  Future sendNotification({required String body, String? title, required String to, String? image}) async {
+  Future sendNotification(
+      {required String body,
+      String? title,
+      required String to,
+      String? image}) async {
     try {
       Map data = {
         "to": to,
@@ -96,6 +101,32 @@ class APICall {
       return response.data;
     } catch (e) {
       errorDisplay.display(e, url_singin);
+    }
+  }
+
+  Future apiSocialLogin(
+    String email,
+    String token,
+    String socialType,
+    String devicetoken,
+    String deviceId,
+  ) async {
+    try {
+      Map data = {
+        "email": email,
+        "token": token,
+        "social_type": socialType,
+        "user_type": "user",
+        "device_id": deviceId,
+        "device_type": devicetoken,
+        "is_push_notification": 0,
+        "app_type": "user"
+      };
+      final response = await dio.post(url_sociallogin, data: data);
+      responseMessage.display(url_sociallogin, response);
+      return response.data;
+    } catch (e) {
+      errorDisplay.display(e, url_sociallogin);
     }
   }
 
@@ -177,11 +208,19 @@ class APICall {
     }
   }
 
-  Future apiUpdateUserInfo(String name, String website, String userBio, String dob, String gender) async {
+  Future apiUpdateUserInfo(String name, String website, String userBio,
+      String dob, String gender) async {
     try {
       // dio.options.headers["Sessionid"] = sessionId;
 
-      Map data = {"user_id": _userData.userId, "fullname": name, "website": website, "user_bio": userBio, "dob": dob, "gender": gender};
+      Map data = {
+        "user_id": _userData.userId,
+        "fullname": name,
+        "website": website,
+        "user_bio": userBio,
+        "dob": dob,
+        "gender": gender
+      };
       final response = await dio.post(url_updateProfile, data: data);
       responseMessage.display(url_updateProfile, response);
       return response.data;
@@ -243,8 +282,13 @@ class APICall {
   //{"user_id" : "6", "order_status" : "complete", "offset": 0, "limit" : 10 }
   Future apiGetActiveBookings() async {
     try {
-      Map data = {"user_id": _userData.userId, "order_status": 'active', "offset": 0, "limit": 10};
-
+      Map data = {
+        "user_id": _userData.userId,
+        "order_status": 'active',
+        "offset": 0,
+        "limit": 10
+      };
+      log(_userData.sessionId.toString());
       final response = await dio.post(url_getActiveBookings, data: data);
       responseMessage.display(url_getActiveBookings, response);
       return response.data;
@@ -253,9 +297,16 @@ class APICall {
     }
   }
 
-  Future apiGetPastBookings() async {
+  Future apiGetPastBookings({String? startDate, String? endDate}) async {
     try {
-      Map data = {"user_id": _userData.userId, "order_status": 'complete', "offset": 0, "limit": 10};
+      Map data = {
+        "user_id": _userData.userId,
+        "order_status": 'complete',
+        "offset": 0,
+        "limit": 10,
+        "start_date": startDate ?? '',
+        "end_date": endDate ?? ''
+      };
 
       final response = await dio.post(url_getPastBookings, data: data);
       responseMessage.display(url_getPastBookings, response);
@@ -292,6 +343,37 @@ class APICall {
     }
   }
 
+  Future apiGetAdsPackagesList() async {
+    try {
+      Map data = {
+        "user_id": _userData.userId,
+      };
+
+      final response = await dio.post(url_getgetAdsPackagesList, data: data);
+      responseMessage.display(url_getgetAdsPackagesList, response);
+      return response.data;
+    } catch (e) {
+      errorDisplay.display(e, url_getgetAdsPackagesList);
+    }
+  }
+
+  Future adsPackageRequests(
+      {required String packageId, required String packageName}) async {
+    try {
+      Map data = {
+        "marchant_id": _userData.userId,
+        "package_id": _userData.userId,
+        "package_name": _userData.userId,
+      };
+
+      final response = await dio.post(url_packageRequests, data: data);
+      responseMessage.display(url_packageRequests, response);
+      return response.data;
+    } catch (e) {
+      errorDisplay.display(e, url_packageRequests);
+    }
+  }
+
   Future apiGetMarchantAllDetails({required String marchantId}) async {
     try {
       Map data = {"user_id": marchantId, "category_id": "1"};
@@ -305,9 +387,26 @@ class APICall {
     }
   }
 
+  Future apicancelOrders({required String order_id}) async {
+    try {
+      Map data = {"order_id": order_id};
+
+      final response = await dio.post(url_cancelOrders, data: data);
+
+      responseMessage.display(url_cancelOrders, response);
+      return response.data;
+    } catch (e) {
+      errorDisplay.display(e, url_cancelOrders);
+    }
+  }
+
   Future apiChangePassword(String newPassword, String oldPassword) async {
     try {
-      Map data = {"user_id": _userData.userId, "oldPassword": oldPassword, "newPassword": newPassword};
+      Map data = {
+        "user_id": _userData.userId,
+        "oldPassword": oldPassword,
+        "newPassword": newPassword
+      };
 
       final response = await dio.post(url_changePassword, data: data);
       responseMessage.display(url_changePassword, response);
@@ -390,7 +489,8 @@ class APICall {
     }
   }
 
-  Future apiLike({required String marchant_id, required String image_id}) async {
+  Future apiLike(
+      {required String marchant_id, required String image_id}) async {
     try {
       Map data = {
         "user_id": _userData.userId,
@@ -413,7 +513,13 @@ class APICall {
     required String rating,
   }) async {
     try {
-      Map data = {"user_id": _userData.userId, "marchant_id": merchantId, "order_id": orderId, "comments": comment, "rating": rating};
+      Map data = {
+        "user_id": _userData.userId,
+        "marchant_id": merchantId,
+        "order_id": orderId,
+        "comments": comment,
+        "rating": rating
+      };
       log("$data", name: "Review API Data");
       final response = await dio.post(url_addReview, data: data);
 
@@ -424,7 +530,10 @@ class APICall {
     }
   }
 
-  Future apiAddCommentPhoto({required String marchant_id, required String image_id, required String comments}) async {
+  Future apiAddCommentPhoto(
+      {required String marchant_id,
+      required String image_id,
+      required String comments}) async {
     try {
       Map data = {
         "user_id": _userData.userId,
@@ -471,8 +580,17 @@ class APICall {
         "offset": 0,
         "limit": 10,
         "filters": {
-          "quick_filters": {"open_now": opennow, "lat": lat, "lng": long, "rating": rateing},
-          "sort_by": {"nearest": nearest, "cost_low_to_high": cost_low_to_high, "cost_high_to_low": cost_high_to_low},
+          "quick_filters": {
+            "open_now": opennow,
+            "lat": lat,
+            "lng": long,
+            "rating": rateing
+          },
+          "sort_by": {
+            "nearest": nearest,
+            "cost_low_to_high": cost_low_to_high,
+            "cost_high_to_low": cost_high_to_low
+          },
           "list_by": {"home_service": homeservice}
         }
       };
@@ -490,7 +608,12 @@ class APICall {
     log("${lat}", name: "Latitude");
     log("${long}", name: "Longitude");
     try {
-      Map data = {"user_id": _userData.userId, "lat": "$lat", "long": "$long", "is_permission": true};
+      Map data = {
+        "user_id": _userData.userId,
+        "lat": "$lat",
+        "long": "$long",
+        "is_permission": true
+      };
       print(data);
       final response = await dio.post(url_getUserDiscovery, data: data);
       responseMessage.display(url_getUserDiscovery, response);
@@ -545,7 +668,11 @@ class APICall {
   Future apiGetImagesAgainstUser({required String merchatId}) async {
     try {
       //fakeid
-      Map data = {"user_id": merchatId, "offset": 0, "limit": 10}; //give user_id = merchat_id
+      Map data = {
+        "user_id": merchatId,
+        "offset": 0,
+        "limit": 10
+      }; //give user_id = merchat_id
       final response = await dio.post(url_getImagesAgainstUser, data: data);
       responseMessage.display(url_getImagesAgainstUser, response);
       return response.data;
@@ -648,7 +775,8 @@ class APICall {
     try {
       Map data = {"user_id": marchantId, "category_id": "1"};
 
-      final response = await dio.post(url_getServiceAgainstCategory, data: data);
+      final response =
+          await dio.post(url_getServiceAgainstCategory, data: data);
       responseMessage.display(url_getServiceAgainstCategory, response);
       return response.data;
     } catch (e) {
@@ -663,7 +791,13 @@ class APICall {
     // required String limit
   }) async {
     try {
-      Map data = {"user_id": _userData.userId, "marchant_id": marchant_id, "type": "review", "offset": 0, "limit": 10};
+      Map data = {
+        "user_id": _userData.userId,
+        "marchant_id": marchant_id,
+        "type": "review",
+        "offset": 0,
+        "limit": 10
+      };
       log("wdnwdnjbjkbd" + _userData.userId.toString());
       log("wdnwdnjbjkbd==" + marchant_id);
       print(data);
@@ -708,7 +842,12 @@ class APICall {
 
   Future apiChat({required String userId, required String chat_text}) async {
     try {
-      Map data = {"user_id": _userData.userId, "marchant_id": userId, "app_type": _userData.userType, "chat_text": chat_text};
+      Map data = {
+        "user_id": _userData.userId,
+        "marchant_id": userId,
+        "app_type": _userData.userType,
+        "chat_text": chat_text
+      };
       log("jfhjghghj" + data.toString());
       final response = await dio.post(url_chat, data: data);
       // responseMessage.display(url_chat, response);
@@ -737,7 +876,11 @@ class APICall {
     required String userid,
   }) async {
     try {
-      Map data = {"user_id": _userData.userId, "marchant_id": userid, "app_type": _userData.userType};
+      Map data = {
+        "user_id": _userData.userId,
+        "marchant_id": userid,
+        "app_type": _userData.userType
+      };
 
       final response = await dio.post(url_getChat, data: data);
       print('datara ${response}');
@@ -748,7 +891,11 @@ class APICall {
     }
   }
 
-  Future apiAddCard({required String card_no, required String expire, required String holder_name, required String cvv}) async {
+  Future apiAddCard(
+      {required String card_no,
+      required String expire,
+      required String holder_name,
+      required String cvv}) async {
     try {
       Map data = {
         "user_id": _userData.userId,
@@ -781,7 +928,11 @@ class APICall {
 
   Future apiFeedback({required String feedback}) async {
     try {
-      Map data = {"user_id": _userData.userId, "app_type": _userData.userType, "feedback": feedback};
+      Map data = {
+        "user_id": _userData.userId,
+        "app_type": _userData.userType,
+        "feedback": feedback
+      };
       print(data);
       final response = await dio.post(url_feedbackSupport, data: data);
       responseMessage.display(url_feedbackSupport, response);
@@ -814,7 +965,8 @@ class APICall {
       required String completionTime,
       required List<Map<String, String>> serviceList}) async {
     try {
-      String _orderDate = "${orderDate.year}-${orderDate.month}-${orderDate.day}";
+      String _orderDate =
+          "${orderDate.year}-${orderDate.month}-${orderDate.day}";
       log("${orderDate}", name: "API Calling Date");
       Map data = {
         "user_id": _userData.userId,
@@ -910,7 +1062,10 @@ class APICall {
     }
   }
 
-  Future apiSwapBooking({required String swap_user_id, required String user_booking_id, required String swap_user_booking_id}) async {
+  Future apiSwapBooking(
+      {required String swap_user_id,
+      required String user_booking_id,
+      required String swap_user_booking_id}) async {
     try {
       Map data = {
         "user_id": _userData.userId,

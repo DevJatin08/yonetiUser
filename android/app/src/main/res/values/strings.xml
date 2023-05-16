@@ -1,0 +1,6 @@
+<resources>
+ <string name="app_name">Yoneti</string>
+<string name="facebook_app_id">576830421214359</string>
+<string name="fb_login_protocol_scheme">fb576830421214359</string>
+<string name="facebook_client_token">aeeaa1888a1ab9e769f41f4e96a8b467</string>
+</resources>

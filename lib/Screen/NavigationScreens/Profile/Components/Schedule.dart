@@ -13,7 +13,11 @@ final List<int> scheduleDays = [15];
 final List<int> leaveDays = [26];
 
 class Schedule extends StatefulWidget {
-  const Schedule({Key? key}) : super(key: key);
+  void Function(List<String>)? onTapList;
+  Schedule({
+    Key? key,
+    this.onTapList,
+  }) : super(key: key);
 
   @override
   _ScheduleState createState() => _ScheduleState();
@@ -110,15 +114,16 @@ class _ScheduleState extends State<Schedule> {
             SizedBox(
               height: 10,
             ),
-            InkWell(
+            GestureDetector(
               onTap: () {
-                var timefrom =
-                    DateFormat('yyyy-MM-dd 00:mm:ss').format(fromDate);
-                var timeto = DateFormat('yyyy-MM-dd 23:59:59').format(toDate);
-                log('ff' + timefrom.toString());
-                log('ff' + timeto.toString());
+                var timefrom = DateFormat('yyyy-MM-dd').format(fromDate);
+                var timeto = DateFormat('yyyy-MM-dd').format(toDate);
 
-                // Navigator.pop(context);
+                widget.onTapList!([timefrom, timeto]);
+                // log('ff' + timefrom.toString());
+                // log('ff' + timeto.toString());
+
+                Navigator.pop(context);
               },
               child: Container(
                 width: 200,

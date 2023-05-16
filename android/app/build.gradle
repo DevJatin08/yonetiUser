@@ -70,6 +70,7 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.room:room-runtime:2.3.0"
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
     annotationProcessor "androidx.room:room-compiler:2.3.0"
     implementation platform('com.google.firebase:firebase-bom:30.3.2')
 }
