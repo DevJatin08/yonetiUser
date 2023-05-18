@@ -17,12 +17,12 @@ import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/MyReview.dar
 import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/PaymentHistory.dart';
 import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/PaymentgateWay.dart';
 
-class OptionsBottomSheet extends HookWidget {
+class OptionsBottomSheet extends HookConsumerWidget {
   const OptionsBottomSheet({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
     return Align(
       alignment: Alignment.bottomCenter,

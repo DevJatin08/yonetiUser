@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,10 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Constant/InputStyle.dart';
-import 'package:userapp/Screen/CommonWidgets/EditField.dart';
 import 'package:userapp/Screen/NavigationScreens/Discovery/Discovery.dart';
 
-class AppbarWithIcon extends StatefulHookWidget {
+class AppbarWithIcon extends ConsumerStatefulWidget {
   String? title;
   Widget? icons;
   Widget? icosubIcons;
@@ -27,10 +25,10 @@ class AppbarWithIcon extends StatefulHookWidget {
   });
 
   @override
-  State<AppbarWithIcon> createState() => _AppbarWithIconState();
+  _AppbarWithIconState createState() => _AppbarWithIconState();
 }
 
-class _AppbarWithIconState extends State<AppbarWithIcon> {
+class _AppbarWithIconState extends ConsumerState<AppbarWithIcon> {
   double lat = 0;
   double long = 0;
   String City = "";
@@ -41,7 +39,7 @@ class _AppbarWithIconState extends State<AppbarWithIcon> {
     return Geolocator.getCurrentPosition();
   }
 
-  getlocations() async {
+  getlocations(WidgetRef ref) async {
     setState(() {
       _isLoding = true;
     });
@@ -53,7 +51,7 @@ class _AppbarWithIconState extends State<AppbarWithIcon> {
     lat = currentLocation!.latitude;
     long = currentLocation!.longitude;
     print("adskakdlasda" + lat.toString());
-    context.read(nearbyProvider).getCategories(
+    ref.read(nearbyProvider).getCategories(
           lat: lat,
           long: long,
         );
@@ -88,7 +86,7 @@ class _AppbarWithIconState extends State<AppbarWithIcon> {
   @override
   void initState() {
     // TODO: implement initState
-    getlocations();
+    getlocations(ref);
     _latlong();
     super.initState();
   }
@@ -96,7 +94,7 @@ class _AppbarWithIconState extends State<AppbarWithIcon> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _homeServiceInfoProvider = useProvider(homeServiceProvider);
+    final _homeServiceInfoProvider = ref.watch(homeServiceProvider);
     return Material(
       elevation: 0,
       child: Container(

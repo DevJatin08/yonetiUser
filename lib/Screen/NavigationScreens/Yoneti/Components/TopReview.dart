@@ -3,17 +3,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Model/Reviews/TopReviews.dart';
 import 'package:userapp/Screen/CommonWidgets/Card/TopFindrCard.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Services/Services/TopYoneti.dart';
 
-class TopReview extends StatefulHookWidget {
+class TopReview extends ConsumerStatefulWidget {
   @override
-  State<TopReview> createState() => _TopReviewState();
+  _TopReviewState createState() => _TopReviewState();
 }
 
-class _TopReviewState extends State<TopReview> {
+class _TopReviewState extends ConsumerState<TopReview> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<TopReviews>(

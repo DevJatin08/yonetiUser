@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
@@ -10,12 +9,12 @@ import 'package:userapp/Screen/CommonWidgets/EditField.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 
-class ForgetPasswordScreen extends StatefulHookWidget {
+class ForgetPasswordScreen extends ConsumerStatefulWidget {
   @override
   _ForgetPasswordScreenState createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   TextEditingController emailController = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String email = "";
@@ -23,7 +22,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _userProvide = useProvider(userInfoProvider);
+    final _userProvide = ref.watch(userInfoProvider);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(

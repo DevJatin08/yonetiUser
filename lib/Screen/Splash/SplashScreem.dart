@@ -5,14 +5,14 @@ import 'package:userapp/Constant/BackgroundDecoration.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/Wrapper.dart';
 
-class SplashScreen extends StatefulHookWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool wrapper = false;
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
+    final userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
     Path toppath = Path();
     toppath.moveTo(-size.width * 0.1, size.height * 0.2);

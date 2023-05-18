@@ -6,18 +6,18 @@ import 'package:userapp/Screen/NavigationScreens/Home/Chat/Chat.dart';
 import '../../../../Constant/ConstantValues.dart';
 import '../../../../Constant/Global.dart';
 
-class SingleCahtWidget extends HookWidget {
+class SingleCahtWidget extends HookConsumerWidget {
   final int index;
 
   const SingleCahtWidget({required this.index});
 
   @override
-  Widget build(BuildContext context) {
-    final singleChat = context.read(chatServiceProvider).chats[index];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final singleChat = ref.read(chatServiceProvider).chats[index];
     return InkWell(
       onTap: () {
-        context.read(chatServiceProvider).setCustomerId(singleChat.marchantId);
-        context.read(chatServiceProvider).setCurrentChat(singleChat);
+        ref.read(chatServiceProvider).setCustomerId(singleChat.marchantId);
+        ref.read(chatServiceProvider).setCurrentChat(singleChat);
 
         Navigator.push(
           context,

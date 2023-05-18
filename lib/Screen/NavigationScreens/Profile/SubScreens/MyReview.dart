@@ -5,16 +5,16 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Reviews/SeeAllReview.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class MyReviews extends StatefulHookWidget {
+class MyReviews extends ConsumerStatefulWidget {
   @override
   _MyReviewsState createState() => _MyReviewsState();
 }
 
-class _MyReviewsState extends State<MyReviews> {
+class _MyReviewsState extends ConsumerState<MyReviews> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _marchantProvider = useProvider(marchantProvider);
+    final _marchantProvider = ref.watch(marchantProvider);
 
     return FutureBuilder<ReviewData>(
         future: _marchantProvider.GetAllReviwe(),

@@ -22,14 +22,14 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart' as ge;
 
-class SignUpScreen extends StatefulHookWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   SignUpScreen({Key? key}) : super(key: key);
 
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -39,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
+    final userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -167,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: size.height * 0.02,
                 ),
                 customBtn('Facebook', () {
-                  facebookLogin(context, useProvider);
+                  facebookLogin(context, userProvider);
                 }, FontAwesomeIcons.facebook),
                 SizedBox(
                   height: size.height * 0.02,

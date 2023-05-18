@@ -6,13 +6,13 @@ import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 
-class ReversationPopUp extends HookWidget {
+class ReversationPopUp extends HookConsumerWidget {
   const ReversationPopUp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final _marchantProvider = useProvider(marchantProvider);
+    final _marchantProvider = ref.watch(marchantProvider);
     return Center(
       child: Container(
         height: 200,

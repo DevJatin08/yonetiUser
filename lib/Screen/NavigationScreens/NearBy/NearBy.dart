@@ -10,14 +10,14 @@ import 'package:userapp/Screen/CommonWidgets/Card/ListViewCard.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/NearBy/Component/FilterPopup.dart';
 
-class NearByScreen extends StatefulHookWidget {
+class NearByScreen extends ConsumerStatefulWidget {
   NearByScreen();
 
   @override
   _NearByScreenState createState() => _NearByScreenState();
 }
 
-class _NearByScreenState extends State<NearByScreen> {
+class _NearByScreenState extends ConsumerState<NearByScreen> {
   bool gridView = true;
 
   List<MarchantDetail>? _users = <MarchantDetail>[];
@@ -28,12 +28,12 @@ class _NearByScreenState extends State<NearByScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    LoadingData();
+    LoadingData(ref);
   }
 
-  Future LoadingData() async {
+  Future LoadingData(WidgetRef ref) async {
     // await context.read(homeServiceProvider).getMerchantList();
-    await context.read(homeServiceProvider).getMerchantList();
+    await ref.read(homeServiceProvider).getMerchantList();
     setState(() {
       _isLoading = false;
     });
@@ -42,7 +42,7 @@ class _NearByScreenState extends State<NearByScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _homeServiceInfoProvider = useProvider(homeServiceProvider);
+    final _homeServiceInfoProvider = ref.watch(homeServiceProvider);
     final double itemWidth = size.width / 2.3;
     double cardWidth = MediaQuery.of(context).size.width / 3.3;
     double cardHeight = MediaQuery.of(context).size.height / 3.6;

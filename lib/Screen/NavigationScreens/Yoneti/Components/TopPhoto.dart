@@ -10,13 +10,13 @@ import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/Components/Picture/SinglePicture.dart';
 import 'package:userapp/Services/api_client/APICall.dart';
 
-class TopPhotos extends HookWidget {
+class TopPhotos extends HookConsumerWidget {
   String imagenotfound = "https://www.alldaydr.com/app/images/no_image.png";
 
   @override
-  Widget build(BuildContext context) {
-    final _topphotosProvider = useProvider(topphotosProvider);
-    final _userInfoProvider = useProvider(userInfoProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _topphotosProvider = ref.watch(topphotosProvider);
+    final _userInfoProvider = ref.watch(userInfoProvider);
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: FutureBuilder<TopPhotosData>(

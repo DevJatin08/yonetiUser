@@ -5,17 +5,17 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/AuthScreens/LoginScreen.dart';
 import 'package:userapp/Screen/NavigationScreens/BaseScreen.dart';
 
-class Wrapper extends StatefulHookWidget {
+class Wrapper extends ConsumerStatefulWidget {
   Wrapper({Key? key}) : super(key: key);
 
   @override
   _WrapperState createState() => _WrapperState();
 }
 
-class _WrapperState extends State<Wrapper> {
+class _WrapperState extends ConsumerState<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
+    final userProvider = ref.watch(userInfoProvider);
     // return BaseHomeWidget();
     return !userProvider.isLogin ? LoginScreen() : BaseHomeWidget();
   }

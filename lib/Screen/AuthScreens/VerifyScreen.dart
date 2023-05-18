@@ -13,12 +13,12 @@ import 'package:userapp/Screen/NavigationScreens/BaseScreen.dart';
 import 'package:userapp/main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class VerifyScreen extends StatefulHookWidget {
+class VerifyScreen extends ConsumerStatefulWidget {
   @override
   _VerifyScreenState createState() => _VerifyScreenState();
 }
 
-class _VerifyScreenState extends State<VerifyScreen> {
+class _VerifyScreenState extends ConsumerState<VerifyScreen> {
   List<FocusNode> focusList = [
     FocusNode(),
     FocusNode(),
@@ -31,8 +31,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
-    final notifications = useProvider(notificationProvider);
+    final userProvider = ref.watch(userInfoProvider);
+    final notifications = ref.watch(notificationProvider);
 
     final size = MediaQuery.of(context).size;
     return Scaffold(
@@ -213,8 +213,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   }
                 }
 
-                 Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => BaseHomeWidget()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => BaseHomeWidget()));
                 // TODO: after testing remove this
 
                 // Navigator.push(context,

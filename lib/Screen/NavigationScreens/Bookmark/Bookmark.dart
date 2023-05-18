@@ -10,21 +10,21 @@ import 'package:userapp/Screen/CommonWidgets/Card/BookmarkCard.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/NearBy/Component/FilterPopup.dart';
 
-class Bookmark extends StatefulHookWidget {
+class Bookmark extends ConsumerStatefulWidget {
   Bookmark({Key? key}) : super(key: key);
 
   @override
   _BookmarkState createState() => _BookmarkState();
 }
 
-class _BookmarkState extends State<Bookmark> {
+class _BookmarkState extends ConsumerState<Bookmark> {
   var Alldata;
   bool _isLoading = true;
   bool Search = false;
   List<MarchantDetail1>? _usersDisplay = <MarchantDetail1>[];
 
   Future LoadingData() async {
-    await context.read(bookmarkProvider).getBookmarkCategories().then((value) {
+    await ref.read(bookmarkProvider).getBookmarkCategories().then((value) {
       setState(() {
         _isLoading = false;
         //print(_usersDisplay.length);
@@ -41,7 +41,7 @@ class _BookmarkState extends State<Bookmark> {
 
   @override
   Widget build(BuildContext context) {
-    final _bookmarkProvider = useProvider(bookmarkProvider);
+    final _bookmarkProvider = ref.watch(bookmarkProvider);
 
     return Scaffold(
       body: _isLoading

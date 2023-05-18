@@ -7,14 +7,14 @@ import 'package:userapp/Model/Home/HomeMerchantList.dart';
 import 'package:userapp/Screen/CommonWidgets/NetWorkImages.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 
-class ListViewCard extends HookWidget {
+class ListViewCard extends HookConsumerWidget {
   MarchantDetail marchantDetail;
 
   ListViewCard({required this.marchantDetail});
 
   @override
-  Widget build(BuildContext context) {
-    final _marchantProvider = useProvider(marchantProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _marchantProvider = ref.watch(marchantProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: standardPadding, vertical: 4),
       child: InkWell(

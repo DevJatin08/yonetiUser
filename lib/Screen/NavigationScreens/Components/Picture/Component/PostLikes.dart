@@ -6,14 +6,14 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Like/likeDetail.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class PostLikes extends HookWidget {
+class PostLikes extends HookConsumerWidget {
   String? ImagId;
   PostLikes({Key? key, this.ImagId}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-    final _getlikeProvider = useProvider(getlikedataProvider);
+    final _getlikeProvider = ref.watch(getlikedataProvider);
 
     return Container(
       width: size.width * .9,

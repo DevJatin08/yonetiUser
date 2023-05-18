@@ -10,7 +10,7 @@ import 'package:userapp/Model/Marchant/MarchantDetail.dart';
 import 'package:userapp/Screen/CommonWidgets/NetWorkImages.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 
-class NearbyCard extends HookWidget {
+class NearbyCard extends HookConsumerWidget {
   bool? featured;
   double? width;
   double? leftPadding;
@@ -28,8 +28,8 @@ class NearbyCard extends HookWidget {
       "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1";
 
   @override
-  Widget build(BuildContext context) {
-    final _marchantProvider = useProvider(marchantProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _marchantProvider = ref.watch(marchantProvider);
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(left: leftPadding!, right: rightPadding!, top: 0, bottom: 20),

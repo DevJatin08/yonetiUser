@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Constant/InputStyle.dart';
@@ -9,7 +8,7 @@ import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 
 import 'NewPassword.dart';
 
-class ForgetPasswordOTPverification extends StatefulHookWidget {
+class ForgetPasswordOTPverification extends ConsumerStatefulWidget {
   String email;
   ForgetPasswordOTPverification({required this.email, Key? key}) : super(key: key);
 
@@ -17,7 +16,7 @@ class ForgetPasswordOTPverification extends StatefulHookWidget {
   _ForgetPasswordOTPverification createState() => _ForgetPasswordOTPverification();
 }
 
-class _ForgetPasswordOTPverification extends State<ForgetPasswordOTPverification> {
+class _ForgetPasswordOTPverification extends ConsumerState<ForgetPasswordOTPverification> {
   List<FocusNode> focusList = [
     FocusNode(),
     FocusNode(),
@@ -28,8 +27,8 @@ class _ForgetPasswordOTPverification extends State<ForgetPasswordOTPverification
   int filledBox = -1;
   String otp = '';
   @override
-  Widget build(BuildContext context) {
-    final _userProvider = useProvider(userInfoProvider);
+  Widget build(BuildContext context ) {
+    final _userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(

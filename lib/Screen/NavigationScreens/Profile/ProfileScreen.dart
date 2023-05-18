@@ -20,14 +20,14 @@ import 'package:userapp/Services/Services/ImagePickerConvertor.dart';
 import 'package:userapp/Services/Services/UserService.dart';
 import 'package:userapp/main.dart';
 
-class ProfileScreen extends StatefulHookWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   ProfileScreen({Key? key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _controller = TabController(length: 2, vsync: this);
   TextEditingController tab1 = TextEditingController();
@@ -54,15 +54,15 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
   }
 
-  Future LoadingData() async {
-    await context.read(orderProvider).activeOrder().then((value) {
+  Future LoadingData(WidgetRef ref) async {
+    await ref.read(orderProvider).activeOrder().then((value) {
       setState(() {
         print('called loaingData');
         _isLoading = false;
         //print(_usersDisplay.length);
       });
     });
-    await context.read(orderProvider).pastOrder().then((value) {
+    await ref.read(orderProvider).pastOrder().then((value) {
       setState(() {
         print('called loaingData');
         _isLoading = false;
@@ -75,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    LoadingData();
+    LoadingData(ref);
     _controller.addListener(() {
       setState(() {});
     });
@@ -110,8 +110,8 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget build(BuildContext context) {
     final double sideSpacing = 0.075;
     final size = MediaQuery.of(context).size;
-    final userProvider = useProvider(userInfoProvider);
-    final _orderProvider = useProvider(orderProvider);
+    final userProvider = ref.watch(userInfoProvider);
+    final _orderProvider = ref.watch(orderProvider);
     log("${jsonEncode(_orderProvider.pastOrderList)}",
         name: "Past Booking Data");
     return SafeArea(
@@ -633,7 +633,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 return Schedule(
                                                   onTapList: (valueList) async {
                                                     // _isLoading = true;
-                                                    await context.read(orderProvider)
+                                                    await ref.read(orderProvider)
                                                         .pastOrder(
                                                             startDate:
                                                                 valueList[0],

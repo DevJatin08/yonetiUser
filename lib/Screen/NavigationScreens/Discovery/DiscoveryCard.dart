@@ -7,7 +7,7 @@ import 'package:userapp/Model/NearBy/NearbyDetails.dart';
 import 'package:userapp/Screen/CommonWidgets/NetWorkImages.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 
-class DiscoveyCard extends HookWidget {
+class DiscoveyCard extends HookConsumerWidget {
   bool? featured;
   double? width;
   double? leftPadding;
@@ -22,8 +22,8 @@ class DiscoveyCard extends HookWidget {
       required this.marchantDetail});
 
   @override
-  Widget build(BuildContext context) {
-    final _marchantProvider = useProvider(marchantProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _marchantProvider = ref.watch(marchantProvider);
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(left: leftPadding!, right: rightPadding!, top: 0, bottom: 20),

@@ -6,16 +6,16 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/AboutYoneti/AboutYoneti.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class AboutYoneti extends StatefulHookWidget {
+class AboutYoneti extends ConsumerStatefulWidget {
   @override
   _AboutYonetiState createState() => _AboutYonetiState();
 }
 
-class _AboutYonetiState extends State<AboutYoneti> {
+class _AboutYonetiState extends ConsumerState<AboutYoneti> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _aboutyonetiProvider = useProvider(AboutyonetiProvider);
+    final _aboutyonetiProvider = ref.watch(AboutyonetiProvider);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),

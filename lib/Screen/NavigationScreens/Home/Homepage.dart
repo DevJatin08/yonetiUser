@@ -18,12 +18,12 @@ import 'package:userapp/Services/Services/google_ads_service.dart';
 
 String? userName;
 
-class HomePage extends StatefulHookWidget {
+class HomePage extends ConsumerStatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   int currentIndex = 0;
   int selectedIndex = 0;
 
@@ -31,19 +31,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadData();
+    loadData(ref);
   }
 
-  loadData() async {
-    await context.read(notificationProvider).getCounter();
+  loadData(WidgetRef ref) async {
+    await ref.read(notificationProvider).getCounter();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final _homeServiceInfoProvider = useProvider(homeServiceProvider);
-    final _notificationProvider = useProvider(notificationProvider);
+    final _homeServiceInfoProvider = ref.watch(homeServiceProvider);
+    final _notificationProvider = ref.watch(notificationProvider);
     return Scaffold(
       body: FutureBuilder<HomeCategories>(
           future: _homeServiceInfoProvider.getCategories(),

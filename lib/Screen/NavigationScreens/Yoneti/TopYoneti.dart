@@ -9,21 +9,21 @@ import 'package:userapp/Screen/NavigationScreens/Yoneti/Components/TopPhoto.dart
 import 'package:userapp/Screen/NavigationScreens/Yoneti/Components/TopReview.dart';
 import 'package:userapp/Services/Services/TopYoneti.dart';
 
-class TopFinder extends StatefulHookWidget {
+class TopFinder extends ConsumerStatefulWidget {
   TopFinder({Key? key}) : super(key: key);
 
   @override
   _TopFinderState createState() => _TopFinderState();
 }
 
-class _TopFinderState extends State<TopFinder> {
+class _TopFinderState extends ConsumerState<TopFinder> {
   List title = ['Reviews', 'Photos'];
   int selectTitle = 0;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _topphotosProvider = useProvider(topphotosProvider);
+    final _topphotosProvider = ref.watch(topphotosProvider);
     return Scaffold(
       body: Column(
         children: [

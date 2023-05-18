@@ -7,7 +7,7 @@ import 'package:userapp/Model/Bookmark/BookmarkDetail.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 import 'package:userapp/Services/Services/MarchantService.dart';
 
-class BookmarkCard extends HookWidget {
+class BookmarkCard extends HookConsumerWidget {
   List<MarchantDetail1>? data;
   int index;
   BookmarkCard({required this.data, required this.index});
@@ -15,8 +15,8 @@ class BookmarkCard extends HookWidget {
   String defaultavtar =
       "https://unwomen.org.au/wp-content/uploads/2020/09/Avitar_Image_Placeholder-1.png";
   @override
-  Widget build(BuildContext context) {
-    final _merchantProvider = useProvider(marchantProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _merchantProvider = ref.watch(marchantProvider);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(

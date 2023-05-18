@@ -8,20 +8,20 @@ import 'package:userapp/Screen/CommonWidgets/Appbars/Appbar.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/Components/Review/ReviewCard.dart';
 
-class ReviewPage extends StatefulHookWidget {
+class ReviewPage extends ConsumerStatefulWidget {
   ReviewPage({Key? key}) : super(key: key);
 
   @override
   _ReviewPageState createState() => _ReviewPageState();
 }
 
-class _ReviewPageState extends State<ReviewPage> {
+class _ReviewPageState extends ConsumerState<ReviewPage> {
   TextEditingController controller = TextEditingController();
   ValueNotifier reviewRate = ValueNotifier(0.0);
 
   @override
   Widget build(BuildContext context) {
-    final _marchantProvider = useProvider(marchantProvider);
+    final _marchantProvider = ref.watch(marchantProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

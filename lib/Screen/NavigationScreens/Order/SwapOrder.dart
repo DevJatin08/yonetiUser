@@ -9,7 +9,7 @@ import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 import 'package:userapp/Screen/CommonWidgets/Popup.dart';
 import 'package:userapp/Screen/NavigationScreens/Order/SwapVerification.dart';
 
-class SwapOrder extends StatefulWidget {
+class SwapOrder extends ConsumerStatefulWidget {
   bool? accept;
   Order? order;
   SwapOrder({this.accept = false, this.order});
@@ -18,7 +18,7 @@ class SwapOrder extends StatefulWidget {
   _SwapOrderState createState() => _SwapOrderState();
 }
 
-class _SwapOrderState extends State<SwapOrder> {
+class _SwapOrderState extends ConsumerState<SwapOrder> {
   int mins = 0;
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _SwapOrderState extends State<SwapOrder> {
 
   @override
   Widget build(BuildContext context) {
-    final _swapBookingProvider = context.read(swapBookingProvider);
+    final _swapBookingProvider = ref.read(swapBookingProvider);
 
     DateTime now = DateTime.now();
     final size = MediaQuery.of(context).size;

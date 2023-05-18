@@ -25,14 +25,14 @@ import 'package:userapp/Services/Services/NearbyService.dart';
 String latitude = "latitude";
 String longitude = "longitude";
 
-class Discovery extends StatefulHookWidget {
+class Discovery extends ConsumerStatefulWidget {
   Discovery({Key? key}) : super(key: key);
 
   @override
   _DiscoveryState createState() => _DiscoveryState();
 }
 
-class _DiscoveryState extends State<Discovery> {
+class _DiscoveryState extends ConsumerState<Discovery> {
   List<Discovery>? _usersDisplay = <Discovery>[];
   Placemark placemark = Placemark();
   bool Search = false;
@@ -47,7 +47,7 @@ class _DiscoveryState extends State<Discovery> {
   }
 
   // Location location = new Location();
-  getlocations() async {
+  getlocations(WidgetRef ref) async {
     setState(() {
       _isLoding = true;
     });
@@ -59,7 +59,7 @@ class _DiscoveryState extends State<Discovery> {
     lat = currentLocation!.latitude;
     long = currentLocation!.longitude;
     print("adskakdlasda" + lat.toString());
-    context.read(nearbyProvider).getCategories(
+    ref.read(nearbyProvider).getCategories(
           lat: lat,
           long: long,
         );
@@ -82,7 +82,7 @@ class _DiscoveryState extends State<Discovery> {
   @override
   void initState() {
     // TODO: implement initState
-    getlocations();
+    getlocations(ref);
     _latlong();
     super.initState();
   }
@@ -101,7 +101,7 @@ class _DiscoveryState extends State<Discovery> {
 
   @override
   Widget build(BuildContext context) {
-    final _discoveryServiceInfoProvider = useProvider(nearbyProvider);
+    final _discoveryServiceInfoProvider = ref.watch(nearbyProvider);
     return _isLoding
         ? LoadingWidget()
         : FutureBuilder<NearbyModel>(

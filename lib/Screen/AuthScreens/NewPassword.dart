@@ -9,7 +9,7 @@ import 'package:userapp/Screen/CommonWidgets/EditField.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 
-class NewPassword extends StatefulHookWidget {
+class NewPassword extends ConsumerStatefulWidget {
   String email;
   NewPassword({required this.email});
 
@@ -17,12 +17,12 @@ class NewPassword extends StatefulHookWidget {
   _NewPasswordState createState() => _NewPasswordState();
 }
 
-class _NewPasswordState extends State<NewPassword> {
+class _NewPasswordState extends ConsumerState<NewPassword> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final _userProvider = useProvider(userInfoProvider);
+    final _userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(

@@ -1,24 +1,22 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Notification/NotificationDetail.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class NotificationMessage extends StatefulHookWidget {
+class NotificationMessage extends ConsumerStatefulWidget {
   NotificationMessage({Key? key}) : super(key: key);
 
   @override
   _NotificationMessageState createState() => _NotificationMessageState();
 }
 
-class _NotificationMessageState extends State<NotificationMessage> {
+class _NotificationMessageState extends ConsumerState<NotificationMessage> {
   @override
   Widget build(BuildContext context) {
-    final _notificationInfoProvider = useProvider(notificationProvider);
+     final _notificationInfoProvider =  ref.watch(notificationProvider);
 
     return FutureBuilder<NotificationModal>(
         future: _notificationInfoProvider.getCategories(0),

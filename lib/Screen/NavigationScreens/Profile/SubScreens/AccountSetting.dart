@@ -8,14 +8,14 @@ import 'package:userapp/Constant/InputStyle.dart';
 import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 import 'package:userapp/Screen/CommonWidgets/EditField.dart';
 
-class AccountAndSettings extends StatefulHookWidget {
+class AccountAndSettings extends ConsumerStatefulWidget {
   AccountAndSettings({Key? key}) : super(key: key);
 
   @override
   _AccountAndSettingsState createState() => _AccountAndSettingsState();
 }
 
-class _AccountAndSettingsState extends State<AccountAndSettings> {
+class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
   TextEditingController businessName = TextEditingController();
   TextEditingController yourname = TextEditingController();
 
@@ -33,7 +33,7 @@ class _AccountAndSettingsState extends State<AccountAndSettings> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _userInfoProvider = useProvider(userInfoProvider);
+    final _userInfoProvider = ref.watch(userInfoProvider);
 
     final theme = Theme.of(context);
     return Scaffold(

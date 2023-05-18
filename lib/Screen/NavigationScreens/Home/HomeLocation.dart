@@ -10,14 +10,14 @@ import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 import 'package:userapp/Screen/NavigationScreens/Discovery/Discovery.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/Homepage.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool homeMaster = false;
   late LocationData _locationData;
   late double lat;
@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         }
                         print("adskakdlasda" + lat.toString());
-                        useProvider(nearbyProvider).getCategories(
+                        ref.watch(nearbyProvider).getCategories(
                           lat: lat,
                           long: long,
                         );

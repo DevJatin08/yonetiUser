@@ -15,7 +15,7 @@ import 'package:userapp/Screen/NavigationScreens/Components/Picture/Component/Po
 import 'package:userapp/Screen/NavigationScreens/Components/Picture/Component/PostLikes.dart';
 import 'package:userapp/Screen/NavigationScreens/Components/Picture/Component/PostPopup.dart';
 
-class SinglePicture extends StatefulHookWidget {
+class SinglePicture extends ConsumerStatefulWidget {
   String? image;
   String? id;
   String? name;
@@ -28,16 +28,16 @@ class SinglePicture extends StatefulHookWidget {
   _SinglePictureState createState() => _SinglePictureState();
 }
 
-class _SinglePictureState extends State<SinglePicture> {
+class _SinglePictureState extends ConsumerState<SinglePicture> {
   List like = [];
   String imagenotfound = "https://www.alldaydr.com/app/images/no_image.png";
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _getcommentProvider = useProvider(getcommentProvider);
-    final _getlikeProvider = useProvider(getlikedataProvider);
-    final _marchantProvider = useProvider(marchantProvider);
+    final _getcommentProvider = ref.watch(getcommentProvider);
+    final _getlikeProvider = ref.watch(getlikedataProvider);
+    final _marchantProvider = ref.watch(marchantProvider);
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,

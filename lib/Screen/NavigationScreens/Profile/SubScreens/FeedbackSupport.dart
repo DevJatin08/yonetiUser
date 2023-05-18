@@ -5,12 +5,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 
-class FeedbackSupport extends StatefulHookWidget {
+class FeedbackSupport extends ConsumerStatefulWidget {
   @override
   _FeedbackSupportState createState() => _FeedbackSupportState();
 }
 
-class _FeedbackSupportState extends State<FeedbackSupport> {
+class _FeedbackSupportState extends ConsumerState<FeedbackSupport> {
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   TextEditingController feedbackController = TextEditingController();
   String feedback = "";
@@ -18,7 +18,7 @@ class _FeedbackSupportState extends State<FeedbackSupport> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _feedbackProvider = useProvider(feedbackProvider);
+    final _feedbackProvider = ref.watch(feedbackProvider);
 
     return Form(
       key: _formkey,

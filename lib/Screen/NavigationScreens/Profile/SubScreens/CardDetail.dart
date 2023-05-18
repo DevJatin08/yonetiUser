@@ -20,7 +20,7 @@ import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/BaseScreen.dart';
 import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/Confirmation.dart';
 
-class CardDetail extends StatefulHookWidget {
+class CardDetail extends ConsumerStatefulWidget {
   double? amount;
   String? marchantId;
   String? selectTime;
@@ -29,13 +29,20 @@ class CardDetail extends StatefulHookWidget {
   String? completionTime;
   Set<MarchantServiceData>? SelectService;
 
-  CardDetail({this.amount, this.marchantId, this.selectDate, this.selectTime, this.agentID, this.SelectService, this.completionTime});
+  CardDetail(
+      {this.amount,
+      this.marchantId,
+      this.selectDate,
+      this.selectTime,
+      this.agentID,
+      this.SelectService,
+      this.completionTime});
 
   @override
   _CardDetailsState createState() => _CardDetailsState();
 }
 
-class _CardDetailsState extends State<CardDetail> {
+class _CardDetailsState extends ConsumerState<CardDetail> {
   TextEditingController cardnumber = TextEditingController();
 
   TextEditingController expired = TextEditingController();
@@ -71,7 +78,7 @@ class _CardDetailsState extends State<CardDetail> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _addcardProvider = useProvider(addcardProvider);
+    final _addcardProvider = ref.watch(addcardProvider);
     return Stack(
       children: [
         Container(
@@ -83,7 +90,8 @@ class _CardDetailsState extends State<CardDetail> {
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(top: size.height * 0.13, right: 20, left: 20),
+                  padding: EdgeInsets.only(
+                      top: size.height * 0.13, right: 20, left: 20),
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formkey,
@@ -95,7 +103,10 @@ class _CardDetailsState extends State<CardDetail> {
                           ),
                           Text(
                             'Credit/Debit card',
-                            style: TextStyle(fontSize: 18, fontFamily: 'bold', color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'bold',
+                                color: Colors.white),
                           ),
                           SizedBox(
                             height: 10,
@@ -109,7 +120,9 @@ class _CardDetailsState extends State<CardDetail> {
                               LengthLimitingTextInputFormatter(19),
                             ],
                             validator: (val) {
-                              if (val == "" || cardnumber.text.isEmpty || cardnumber.text.length < 19) {
+                              if (val == "" ||
+                                  cardnumber.text.isEmpty ||
+                                  cardnumber.text.length < 19) {
                                 return cardnumber.text.length < 19
                                     ? cardnumber.text.length == 0
                                         ? "Enter Card Number"
@@ -127,11 +140,14 @@ class _CardDetailsState extends State<CardDetail> {
                             onChanged: (val) {
                               _formkey.currentState!.validate();
                             },
-                            inputDecoration: transparentInputDecoration.copyWith(
-                                isCollapsed: false,
-                                fillColor: Color(0xffe7e7e7),
-                                filled: true,
-                                hintStyle: TextStyle(color: Color(0xff9d9d9d), fontSize: 15)),
+                            inputDecoration:
+                                transparentInputDecoration.copyWith(
+                                    isCollapsed: false,
+                                    fillColor: Color(0xffe7e7e7),
+                                    filled: true,
+                                    hintStyle: TextStyle(
+                                        color: Color(0xff9d9d9d),
+                                        fontSize: 15)),
                             hint: 'Card number',
                           ),
                           SizedBox(
@@ -151,7 +167,9 @@ class _CardDetailsState extends State<CardDetail> {
                                     _formkey.currentState!.validate();
                                   },
                                   validator: (val) {
-                                    if (val == "" || expired.text.isEmpty || expired.text.length < 5) {
+                                    if (val == "" ||
+                                        expired.text.isEmpty ||
+                                        expired.text.length < 5) {
                                       return expired.text.length < 5
                                           ? expired.text.length == 0
                                               ? "Enter Expired Date"
@@ -167,11 +185,14 @@ class _CardDetailsState extends State<CardDetail> {
                                     });
                                     return null;
                                   },
-                                  inputDecoration: transparentInputDecoration.copyWith(
-                                      isCollapsed: false,
-                                      fillColor: Color(0xffe7e7e7),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Color(0xff9d9d9d), fontSize: 15)),
+                                  inputDecoration:
+                                      transparentInputDecoration.copyWith(
+                                          isCollapsed: false,
+                                          fillColor: Color(0xffe7e7e7),
+                                          filled: true,
+                                          hintStyle: TextStyle(
+                                              color: Color(0xff9d9d9d),
+                                              fontSize: 15)),
                                   hint: 'Expired',
                                 ),
                               ),
@@ -189,7 +210,9 @@ class _CardDetailsState extends State<CardDetail> {
                                     _formkey.currentState!.validate();
                                   },
                                   validator: (val) {
-                                    if (val == "" || cvv.text.isEmpty || cvv.text.length < 3) {
+                                    if (val == "" ||
+                                        cvv.text.isEmpty ||
+                                        cvv.text.length < 3) {
                                       return cvv.text.length < 3
                                           ? cvv.text.length == 0
                                               ? "Enter Card Cvv"
@@ -204,11 +227,14 @@ class _CardDetailsState extends State<CardDetail> {
                                     });
                                     return null;
                                   },
-                                  inputDecoration: transparentInputDecoration.copyWith(
-                                      isCollapsed: false,
-                                      fillColor: Color(0xffe7e7e7),
-                                      filled: true,
-                                      hintStyle: TextStyle(color: Color(0xff9d9d9d), fontSize: 15)),
+                                  inputDecoration:
+                                      transparentInputDecoration.copyWith(
+                                          isCollapsed: false,
+                                          fillColor: Color(0xffe7e7e7),
+                                          filled: true,
+                                          hintStyle: TextStyle(
+                                              color: Color(0xff9d9d9d),
+                                              fontSize: 15)),
                                   hint: 'CVV',
                                 ),
                               )
@@ -234,11 +260,14 @@ class _CardDetailsState extends State<CardDetail> {
                             onChanged: (val) {
                               _formkey.currentState!.validate();
                             },
-                            inputDecoration: transparentInputDecoration.copyWith(
-                                isCollapsed: false,
-                                fillColor: Color(0xffe7e7e7),
-                                filled: true,
-                                hintStyle: TextStyle(color: Color(0xff9d9d9d), fontSize: 15)),
+                            inputDecoration:
+                                transparentInputDecoration.copyWith(
+                                    isCollapsed: false,
+                                    fillColor: Color(0xffe7e7e7),
+                                    filled: true,
+                                    hintStyle: TextStyle(
+                                        color: Color(0xff9d9d9d),
+                                        fontSize: 15)),
                             hint: 'Cardholder Name',
                           ),
                           SizedBox(
@@ -254,7 +283,9 @@ class _CardDetailsState extends State<CardDetail> {
                               children: [
                                 value
                                     ? Container(
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white),
                                         child: Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: Icon(
@@ -267,7 +298,8 @@ class _CardDetailsState extends State<CardDetail> {
                                     : Container(
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          border: Border.all(width: 2, color: Colors.white),
+                                          border: Border.all(
+                                              width: 2, color: Colors.white),
                                         ),
                                         width: 20,
                                         height: 20,
@@ -277,7 +309,10 @@ class _CardDetailsState extends State<CardDetail> {
                                 ),
                                 Text(
                                   'Save card Information',
-                                  style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -293,7 +328,10 @@ class _CardDetailsState extends State<CardDetail> {
                                     if (_formkey.currentState!.validate()) {
                                       _formkey.currentState!.save();
                                       _addcardProvider.addCardInfo(
-                                          card_no: Cardnumber, expire: Cardexpiredate, holder_name: CardHoldername, cvv: Cardcvv);
+                                          card_no: Cardnumber,
+                                          expire: Cardexpiredate,
+                                          holder_name: CardHoldername,
+                                          cvv: Cardcvv);
                                       setState(() {
                                         date = Cardexpiredate.split("/");
                                         cardnumber.clear();
@@ -425,7 +463,8 @@ class _CardDetailsState extends State<CardDetail> {
                                       return GestureDetector(
                                         onHorizontalDragUpdate: (horizontal) {
                                           setState(() {
-                                            horizontalDrag += horizontal.delta.dx;
+                                            horizontalDrag +=
+                                                horizontal.delta.dx;
                                             horizontalDrag %= 360;
                                           });
                                         },
@@ -440,23 +479,34 @@ class _CardDetailsState extends State<CardDetail> {
                                         child: Transform(
                                           transform: Matrix4.identity()
                                             ..setEntry(3, 2, 0.001)
-                                            ..rotateY(pi / 180 * horizontalDrag),
+                                            ..rotateY(
+                                                pi / 180 * horizontalDrag),
                                           alignment: Alignment.center,
                                           child: Container(
                                             width: 300,
                                             height: 200,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                               gradient: LinearGradient(
                                                 colors: [
-                                                  cardSelected ? Color.fromARGB(255, 77, 147, 179) : Color(0xff323232),
-                                                  cardSelected ? Color.fromARGB(255, 35, 100, 131) : Color(0xff000000)
+                                                  cardSelected
+                                                      ? Color.fromARGB(
+                                                          255, 77, 147, 179)
+                                                      : Color(0xff323232),
+                                                  cardSelected
+                                                      ? Color.fromARGB(
+                                                          255, 35, 100, 131)
+                                                      : Color(0xff000000)
                                                 ],
                                                 begin: Alignment.topLeft,
                                                 end: Alignment.bottomRight,
                                               ),
                                             ),
-                                            child: horizontalDrag <= 90 || horizontalDrag >= 270 ? cardFront(data: data) : cardBack(),
+                                            child: horizontalDrag <= 90 ||
+                                                    horizontalDrag >= 270
+                                                ? cardFront(data: data)
+                                                : cardBack(),
                                           ),
                                         ),
                                       );
@@ -587,14 +637,22 @@ class _CardDetailsState extends State<CardDetail> {
               ),
               Container(
                 width: size.width,
-                decoration:
-                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(35), topRight: Radius.circular(35))),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        topRight: Radius.circular(35))),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.1, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: size.width * 0.1, vertical: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (cardSelected || cardnumber.text.length == 19 && cvv.text.length == 3 && expired.text.length == 5 && name.text.isNotEmpty)
+                      if (cardSelected ||
+                          cardnumber.text.length == 19 &&
+                              cvv.text.length == 3 &&
+                              expired.text.length == 5 &&
+                              name.text.isNotEmpty)
                         InkWell(
                           onTap: () async {
                             //  showDialog(
@@ -602,7 +660,10 @@ class _CardDetailsState extends State<CardDetail> {
                             //     builder: (context) {
                             //       return ConfirmationScreen(icon: Icon(Icons.ac_unit),name: "Tapped Successfully",title: "Tapped", color: Colors.amberAccent,);
                             //     });
-                            if (cardnumber.text.length == 19 && cvv.text.length == 3 && expired.text.length == 5 && name.text.isNotEmpty) {
+                            if (cardnumber.text.length == 19 &&
+                                cvv.text.length == 3 &&
+                                expired.text.length == 5 &&
+                                name.text.isNotEmpty) {
                               _formkey.currentState!.save();
                             }
                             showDialog(
@@ -613,14 +674,20 @@ class _CardDetailsState extends State<CardDetail> {
                             await makePayment();
                           },
                           child: Container(
-                            decoration: BoxDecoration(color: Color(0xff454545), borderRadius: BorderRadius.circular(10)),
+                            decoration: BoxDecoration(
+                                color: Color(0xff454545),
+                                borderRadius: BorderRadius.circular(10)),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 2),
                               child: Row(
                                 children: [
                                   Text(
                                     'Pay Now',
-                                    style: TextStyle(fontSize: 12, fontFamily: 'bold', color: Colors.white),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: 'bold',
+                                        color: Colors.white),
                                   ),
                                   SizedBox(
                                     width: 10,
@@ -643,11 +710,13 @@ class _CardDetailsState extends State<CardDetail> {
                               children: [
                                 Text(
                                   '\$${widget.amount == null ? "0" : (widget.amount)!.toStringAsFixed(2).toString()}',
-                                  style: TextStyle(fontSize: 21, color: Color(0xff9d9d9d)),
+                                  style: TextStyle(
+                                      fontSize: 21, color: Color(0xff9d9d9d)),
                                 ),
                                 Text(
                                   'Exclusive of Taxes',
-                                  style: TextStyle(fontSize: 14, color: Color(0xff9d9d9d)),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Color(0xff9d9d9d)),
                                 ),
                               ],
                             ),
@@ -667,13 +736,51 @@ class _CardDetailsState extends State<CardDetail> {
 
   Future<void> makePayment() async {
     try {
-      await Stripe.instance.dangerouslyUpdateCardDetails(
-          CardDetails(cvc: Cardcvv, expirationMonth: int.parse(date[0]), expirationYear: int.parse(date[1]), number: Cardnumber));
+      await Stripe.instance.dangerouslyUpdateCardDetails(CardDetails(
+          cvc: Cardcvv,
+          expirationMonth: int.parse(date[0]),
+          expirationYear: int.parse(date[1]),
+          number: Cardnumber));
 
-      final paymentMethod = await Stripe.instance.createPaymentMethod(PaymentMethodParams.card());
+      final PaymentMethod paymentMethod =
+          await Stripe.instance.createPaymentMethod(
+        params: PaymentMethodParams.card(
+          paymentMethodData: PaymentMethodData.fromJson({
+            'email': 'email@stripe.com',
+            'phone': '+48888000888',
+            'address': Address(
+              city: 'Houston',
+              country: 'US',
+              line1: '1459  Circle Drive',
+              line2: '',
+              state: 'Texas',
+              postalCode: '77063',
+            )
+          }),
+        ),
 
-      final paymentIntentResult = await createPaymentIntent(currency: 'USD', paymentMethodId: paymentMethod.id, useStripeSdk: true);
-      final paymentIntent = await Stripe.instance.retrievePaymentIntent(paymentIntentResult['client_secret']);
+        // PaymentMethodParams.card(
+        //   paymentMethodData: PaymentMethodData.fromJson({
+        //     'email': 'email@stripe.com',
+        //     'phone': '+48888000888',
+        //     'address': Address(
+        //       city: 'Houston',
+        //       country: 'US',
+        //       line1: '1459  Circle Drive',
+        //       line2: '',
+        //       state: 'Texas',
+        //       postalCode: '77063',
+        //     )
+        //   }),
+        // ),
+      );
+
+      final paymentIntentResult = await createPaymentIntent(
+          currency: 'USD',
+          paymentMethodId: paymentMethod.id,
+          useStripeSdk: true);
+      final paymentIntent = await Stripe.instance
+          .retrievePaymentIntent(paymentIntentResult['client_secret']);
       //  .handleCardAction(paymentIntentResult['client_secret']);
 
       await confirmIntent(paymentIntent.id);
@@ -687,7 +794,8 @@ class _CardDetailsState extends State<CardDetail> {
     List<Map<String, dynamic>>? items,
   }) async {
     Map<String, dynamic> body = {
-      'amount': calculateAmount(widget.amount == null ? "00" : widget.amount!.toStringAsFixed(2)),
+      'amount': calculateAmount(
+          widget.amount == null ? "00" : widget.amount!.toStringAsFixed(2)),
       'currency': currency,
       'payment_method': paymentMethodId,
       'payment_method_types[]': 'card',
@@ -695,7 +803,8 @@ class _CardDetailsState extends State<CardDetail> {
     };
 
     Dio _dio = Dio(BaseOptions(headers: {
-      'Authorization': 'Bearer sk_test_51KPBpMD7PODSamJcenIlY0rx1Szst6xqTFVnnK57G5rb4sADu0RlReSTYGXKjDiukJjJbVoQygTmqzNgjvyEBgK5002HGNKx83',
+      'Authorization':
+          'Bearer sk_test_51KPBpMD7PODSamJcenIlY0rx1Szst6xqTFVnnK57G5rb4sADu0RlReSTYGXKjDiukJjJbVoQygTmqzNgjvyEBgK5002HGNKx83',
       'Content-Type': 'application/x-www-form-urlencoded'
     }));
     Response response = await _dio.post(
@@ -720,10 +829,12 @@ class _CardDetailsState extends State<CardDetail> {
             );
           });
       Timer(Duration(seconds: 2), () {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => BaseHomeWidget()), (route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => BaseHomeWidget()),
+            (route) => false);
       });
       log("${widget.selectDate.toString()}", name: "Card Order Date");
-      context.read(marchantProvider).bookingService(
+      ref.read(marchantProvider).bookingService(
             marchantId: widget.marchantId.toString(),
             orderDate: widget.selectDate!,
             time: widget.selectTime.toString(),
@@ -746,7 +857,8 @@ class _CardDetailsState extends State<CardDetail> {
     final response = await http.post(
       url,
       headers: {
-        'Authorization': 'Bearer sk_test_51KPBpMD7PODSamJcenIlY0rx1Szst6xqTFVnnK57G5rb4sADu0RlReSTYGXKjDiukJjJbVoQygTmqzNgjvyEBgK5002HGNKx83',
+        'Authorization':
+            'Bearer sk_test_51KPBpMD7PODSamJcenIlY0rx1Szst6xqTFVnnK57G5rb4sADu0RlReSTYGXKjDiukJjJbVoQygTmqzNgjvyEBgK5002HGNKx83',
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: json.encode({'paymentIntentId': paymentIntentId}),
@@ -813,14 +925,18 @@ class _CardDetailsState extends State<CardDetail> {
           Text(
             "${data.cardNo}",
             // "${data.cardNo.toString().substring(0, 4)} ${data.cardNo.toString().substring(4, 8)} ${data.cardNo.toString().substring(8, 12)} ${data.cardNo.toString().substring(12, 16)}",
-            style: TextStyle(color: Colors.grey[300], fontSize: 18, wordSpacing: 15, shadows: [
-              BoxShadow(
-                blurRadius: 2,
-                spreadRadius: 2,
-                color: Colors.black,
-                offset: Offset(2, 2),
-              )
-            ]),
+            style: TextStyle(
+                color: Colors.grey[300],
+                fontSize: 18,
+                wordSpacing: 15,
+                shadows: [
+                  BoxShadow(
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                    color: Colors.black,
+                    offset: Offset(2, 2),
+                  )
+                ]),
           ),
           SizedBox(
             height: 10,
@@ -879,7 +995,8 @@ class CardNumberFormatter extends TextInputFormatter {
     for (int i = 0; i < inputText.length; i++) {
       bufferString.write(inputText[i]);
       var nonZeroIndexValue = i + 1;
-      if (nonZeroIndexValue % value == 0 && nonZeroIndexValue != inputText.length) {
+      if (nonZeroIndexValue % value == 0 &&
+          nonZeroIndexValue != inputText.length) {
         bufferString.write(message);
       }
     }

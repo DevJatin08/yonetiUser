@@ -4,18 +4,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Notification/NotificationDetail.dart';
 
-class NotificationAlert extends StatefulHookWidget {
+class NotificationAlert extends ConsumerStatefulWidget {
   NotificationAlert({Key? key}) : super(key: key);
 
   @override
   _NotificationAlertState createState() => _NotificationAlertState();
 }
 
-class _NotificationAlertState extends State<NotificationAlert> {
+class _NotificationAlertState extends ConsumerState<NotificationAlert> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _notificationInfoProvider = useProvider(notificationProvider);
+    final _notificationInfoProvider = ref.watch(notificationProvider);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
       child: Column(

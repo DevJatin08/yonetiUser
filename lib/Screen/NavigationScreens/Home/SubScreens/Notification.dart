@@ -9,14 +9,14 @@ import 'package:userapp/Screen/NavigationScreens/Home/Chat/all_chat_list.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/Components/NotificationAlert.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/Components/NotificationMessage.dart';
 
-class NotificationPopUp extends StatefulHookWidget {
+class NotificationPopUp extends ConsumerStatefulWidget {
   NotificationPopUp({Key? key}) : super(key: key);
 
   @override
   _NotificationPopUpState createState() => _NotificationPopUpState();
 }
 
-class _NotificationPopUpState extends State<NotificationPopUp> {
+class _NotificationPopUpState extends ConsumerState<NotificationPopUp> {
   List popString = ['Message', "Alerts"];
 
   int selectedTap = 0;
@@ -24,7 +24,7 @@ class _NotificationPopUpState extends State<NotificationPopUp> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-        final counter = useProvider(notificationProvider);
+        final counter = ref.watch(notificationProvider);
 
     return Scaffold(
       body: SafeArea(

@@ -323,7 +323,7 @@ import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class ChatScreen extends StatefulHookWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   final String name;
   final String? merchantImage;
 
@@ -333,7 +333,7 @@ class ChatScreen extends StatefulHookWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   late Timer timer;
 
   String message = "";
@@ -343,14 +343,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    loadData();
+    loadData(ref);
   }
 
-  loadData() async {
+  loadData(WidgetRef ref) async {
     // context.read(chatServiceProvider).cleanData();
 
     timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      context.read(chatServiceProvider).getChat();
+      ref.read(chatServiceProvider).getChat();
     });
   }
 
@@ -362,9 +362,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _useProvider = useProvider(userInfoProvider);
-    final _chatProvider = useProvider(chatServiceProvider);
-    final _marchantProvider = context.read(marchantProvider);
+    final _useProvider = ref.watch(userInfoProvider);
+    final _chatProvider = ref.watch(chatServiceProvider);
+    final _marchantProvider = ref.read(marchantProvider);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(

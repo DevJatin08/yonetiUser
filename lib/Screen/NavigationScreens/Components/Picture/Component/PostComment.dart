@@ -7,7 +7,7 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Comment/GetCommentDetail.dart';
 import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 
-class PostComment extends StatefulHookWidget {
+class PostComment extends ConsumerStatefulWidget {
   String? CommentId;
   String? ImageID;
   String? merchantId;
@@ -19,7 +19,7 @@ class PostComment extends StatefulHookWidget {
   _PostCommentState createState() => _PostCommentState();
 }
 
-class _PostCommentState extends State<PostComment> {
+class _PostCommentState extends ConsumerState<PostComment> {
   // List commentdata = [];
   GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController commentController = TextEditingController();
@@ -37,9 +37,9 @@ class _PostCommentState extends State<PostComment> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _userProvider = useProvider(userInfoProvider);
-    final _getcommentProvider = useProvider(getcommentProvider);
-    final _addcommentProvider = useProvider(marchantProvider);
+    final _userProvider = ref.watch(userInfoProvider);
+    final _getcommentProvider = ref.watch(getcommentProvider);
+    final _addcommentProvider = ref.watch(marchantProvider);
     return SingleChildScrollView(
       child: Container(
         width: size.width * .9,

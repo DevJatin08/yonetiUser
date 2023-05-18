@@ -21,7 +21,7 @@ import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/Components/near
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/Reversation.dart';
 import 'package:userapp/Services/Services/MarchantService.dart';
 
-class BrandDetail extends StatefulHookWidget {
+class BrandDetail extends ConsumerStatefulWidget {
   String? bookmark_id;
 
   // int index;
@@ -34,14 +34,14 @@ class BrandDetail extends StatefulHookWidget {
   _BrandDetailState createState() => _BrandDetailState();
 }
 
-class _BrandDetailState extends State<BrandDetail> {
+class _BrandDetailState extends ConsumerState<BrandDetail> {
   double hor_Size = 8.0;
   String defaultavtar = "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1";
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _marchantProvider = context.read(marchantProvider);
+    final _marchantProvider = ref.read(marchantProvider);
     return Scaffold(
       body: FutureBuilder<MarchantDetail>(
           future: _marchantProvider.marchantDetail(),
@@ -255,7 +255,7 @@ class _BrandDetailState extends State<BrandDetail> {
                             CustomButton(
                               text: 'Contact Merchant',
                               voidCallback: () {
-                                context.read(chatServiceProvider).setCustomerId(_marchantProvider.marchantId);
+                                ref.read(chatServiceProvider).setCustomerId(_marchantProvider.marchantId);
 
                                 Navigator.push(
                                   context,
@@ -547,7 +547,7 @@ class _BrandDetailState extends State<BrandDetail> {
   }
 }
 
-class ButtonsClick extends StatefulHookWidget {
+class ButtonsClick extends ConsumerStatefulWidget {
   MarchantDetail snapshot;
   MarchantService marchantProvider;
   String bookmark_ID;
@@ -565,13 +565,13 @@ class ButtonsClick extends StatefulHookWidget {
   _ButtonsClickState createState() => _ButtonsClickState();
 }
 
-class _ButtonsClickState extends State<ButtonsClick> {
+class _ButtonsClickState extends ConsumerState<ButtonsClick> {
   bool bookmark = false;
   String bookmarkId = "0";
 
   @override
   Widget build(BuildContext context) {
-    final _bookmarkServiceInfoProvider = useProvider(bookmarkProvider);
+    final _bookmarkServiceInfoProvider = ref.watch(bookmarkProvider);
 
     return Material(
       color: Colors.white,
@@ -689,17 +689,17 @@ class _ButtonsClickState extends State<ButtonsClick> {
   }
 }
 
-class Bookings extends StatefulHookWidget {
+class Bookings extends ConsumerStatefulWidget {
   @override
   _BookingsState createState() => _BookingsState();
 }
 
-class _BookingsState extends State<Bookings> {
+class _BookingsState extends ConsumerState<Bookings> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    final _marchantProvider = context.read(marchantProvider);
+    final _marchantProvider = ref.read(marchantProvider);
 
     return Container(
       height: size.height * 0.7,

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
@@ -18,7 +17,7 @@ import 'package:userapp/Screen/NavigationScreens/Order/SwapVerification.dart';
 
 import '../../../Model/Marchant/MarchantDetail.dart';
 
-class OrderDetail extends StatefulHookWidget {
+class OrderDetail extends ConsumerStatefulWidget {
   String? Order_id;
   Booking booking;
 
@@ -29,15 +28,14 @@ class OrderDetail extends StatefulHookWidget {
   _OrderDetailState createState() => _OrderDetailState();
 }
 
-class _OrderDetailState extends State<OrderDetail> {
+class _OrderDetailState extends ConsumerState<OrderDetail> {
   int mins = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
 
     super.initState();
-    loadData();
+    loadData(ref);
     mins = Duration(
             seconds: int.parse(1000.toString()) + int.parse(1000.toString()))
         .inMinutes;
@@ -45,12 +43,12 @@ class _OrderDetailState extends State<OrderDetail> {
 
   bool loader = true;
 
-  loadData() async {
-    final _marchantProvider = context.read(marchantProvider);
-    final _orderProvider = context.read(orderProvider);
+  loadData(WidgetRef ref) async {
+    final _marchantProvider = ref.read(marchantProvider);
+    final _orderProvider = ref.read(orderProvider);
     //  await context.read(marchantProvider).getMarchantDetail(_orderProvider.orderDetailsEmpty.marchantId);
     await _orderProvider.orderDetails(order_id: widget.Order_id.toString());
-    await context.read(marchantProvider)
+    await ref.read(marchantProvider)
         .getMarchantDetail(_orderProvider.orderDetailsEmpty.marchantId);
     if (_marchantProvider.marchantDetails.orders![0] != null)
       _order = _marchantProvider.marchantDetails.orders![0];
@@ -66,9 +64,9 @@ class _OrderDetailState extends State<OrderDetail> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _orderProvider = useProvider(orderProvider);
-    final _marchantProvider = context.read(marchantProvider);
-    final _swapBookingProvider = context.read(swapBookingProvider);
+    final _orderProvider = ref.watch(orderProvider);
+    final _marchantProvider = ref.read(marchantProvider);
+    final _swapBookingProvider = ref.read(swapBookingProvider);
 
     _orderProvider.orderDetails(order_id: widget.Order_id.toString());
 
@@ -574,21 +572,21 @@ class _OrderDetailState extends State<OrderDetail> {
   }
 }
 
-class PastOrderDetails extends StatefulWidget {
+class PastOrderDetails extends ConsumerStatefulWidget {
   final String? Order_id;
 
   const PastOrderDetails({Key? key, this.Order_id}) : super(key: key);
 
   @override
-  State<PastOrderDetails> createState() => _PastOrderDetailsState();
+  _PastOrderDetailsState createState() => _PastOrderDetailsState();
 }
 
-class _PastOrderDetailsState extends State<PastOrderDetails> {
+class _PastOrderDetailsState extends ConsumerState<PastOrderDetails> {
   TextEditingController feedbackController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final _orderProvider = context.read(orderProvider);
+    final _orderProvider = ref.read(orderProvider);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

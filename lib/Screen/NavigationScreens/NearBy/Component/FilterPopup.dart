@@ -6,24 +6,24 @@ import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/CommonWidgets/CustomButton.dart';
 
-class FilterPopup extends StatefulHookWidget {
+class FilterPopup extends ConsumerStatefulWidget {
   const FilterPopup({Key? key}) : super(key: key);
 
   @override
   _FilterPopupState createState() => _FilterPopupState();
 }
 
-class _FilterPopupState extends State<FilterPopup> {
+class _FilterPopupState extends ConsumerState<FilterPopup> {
   late LocationData _locationData;
   late double lat;
   late double long;
   Location location = new Location();
-  getlocation() async {
+  getlocation(WidgetRef ref) async {
     _locationData = await location.getLocation();
     location.onLocationChanged.listen((LocationData currentLocation) {
       lat = currentLocation.latitude!;
       long = currentLocation.longitude!;
-     context.read(filterProvider).getFilter(
+     ref.read(filterProvider).getFilter(
           opennow: 0,
           lat: lat,
           long: long,
@@ -38,7 +38,7 @@ class _FilterPopupState extends State<FilterPopup> {
   @override
   void initState() {
     // TODO: implement initState
-    getlocation();
+    getlocation(ref);
     super.initState();
   }
 
@@ -59,7 +59,7 @@ class _FilterPopupState extends State<FilterPopup> {
   ];
   @override
   Widget build(BuildContext context) {
-    final _filterProvider = useProvider(filterProvider);
+    final _filterProvider = ref.watch(filterProvider);
 
     final size = MediaQuery.of(context).size;
     return Padding(

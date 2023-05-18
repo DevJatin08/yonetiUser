@@ -14,12 +14,12 @@ import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/Confirmation
 
 import '../../../../main.dart';
 
-class ChangePassword extends StatefulHookWidget {
+class ChangePassword extends ConsumerStatefulWidget {
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ChangePasswordState extends ConsumerState<ChangePassword> {
   TextEditingController oldPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   List<FocusNode> focusList = [
@@ -35,7 +35,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _userProvide = useProvider(userInfoProvider);
+    final _userProvide = ref.watch(userInfoProvider);
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10),

@@ -10,7 +10,7 @@ import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/NavigationScreens/Components/Picture/SinglePicture.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/Components/BackGroundScreen.dart';
 
-class AllPictureGrid extends StatefulHookWidget {
+class AllPictureGrid extends ConsumerStatefulWidget {
   String? name;
   String? reating;
   String? avatar;
@@ -21,14 +21,14 @@ class AllPictureGrid extends StatefulHookWidget {
   _AllPictureGridState createState() => _AllPictureGridState();
 }
 
-class _AllPictureGridState extends State<AllPictureGrid> {
+class _AllPictureGridState extends ConsumerState<AllPictureGrid> {
   // List<String> gridList = ['All', 'Tab1', 'Tab2', 'Tab3'];
   int selectCategory = 0;
   String albumID = '';
 
   @override
   Widget build(BuildContext context) {
-    final _merchantProvider = useProvider(marchantProvider);
+    final _merchantProvider = ref.watch(marchantProvider);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(

@@ -6,19 +6,19 @@ import 'package:userapp/Screen/NavigationScreens/Home/Chat/SingleCahtWidget.dart
 import '../../../../Constant/Global.dart';
 import '../../../CommonWidgets/LoadingWidget.dart';
 
-class AllChatList extends StatefulHookWidget {
+class AllChatList extends ConsumerStatefulWidget {
   const AllChatList({Key? key}) : super(key: key);
 
   @override
-  State<AllChatList> createState() => _AllChatListState();
+  _AllChatListState createState() => _AllChatListState();
 }
 
-class _AllChatListState extends State<AllChatList> {
+class _AllChatListState extends ConsumerState<AllChatList> {
   bool loading = false;
 
   @override
   Widget build(BuildContext context) {
-    final _chatNotifier = useProvider(chatServiceProvider);
+    final _chatNotifier = ref.watch(chatServiceProvider);
     return loading
         ? LoadingWidget()
         : Padding(

@@ -1,8 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
@@ -19,7 +18,7 @@ import 'package:userapp/Screen/NavigationScreens/Profile/Components/Template.dar
 import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/CardDetail.dart';
 import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/PaymentHistory.dart';
 
-class ReservationScreen extends StatefulHookWidget {
+class ReservationScreen extends ConsumerStatefulWidget {
   String? name;
   String? ratting;
 
@@ -29,7 +28,8 @@ class ReservationScreen extends StatefulHookWidget {
   _ReservationScreenState createState() => _ReservationScreenState();
 }
 
-class _ReservationScreenState extends State<ReservationScreen> with SingleTickerProviderStateMixin {
+class _ReservationScreenState extends ConsumerState<ReservationScreen>
+    with SingleTickerProviderStateMixin {
   bool expanded = false;
   bool isBarbarExpanded = false;
   DateTime now = DateTime.now();
@@ -89,13 +89,13 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
     super.initState();
     final t = time.add(Duration(minutes: 30));
     selectTime = "${t.hour}:${t.minute}";
-    LodingData();
+    refLodingData();
   }
 
   bool isloding = true;
 
-  Future LodingData() async {
-    await context.read(marchantProvider).getServiceAgainst();
+  Future refLodingData() async {
+    ref.read(marchantProvider).getServiceAgainst();
     isloding = false;
     setState(() {});
   }
@@ -105,7 +105,7 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final _marchantProvider = useProvider(marchantProvider);
+    final _marchantProvider = ref.watch(marchantProvider);
     return isloding == true
         ? Scaffold(
             body: Center(
@@ -132,9 +132,11 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                   Column(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.all(hor_padding),
+                                        padding:
+                                            const EdgeInsets.all(hor_padding),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
                                               child: Text(
@@ -150,12 +152,22 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                               ),
                                             ),
                                             Container(
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(cardRadius), color: primaryColor),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          cardRadius),
+                                                  color: primaryColor),
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
                                                 child: Text(
                                                   "${widget.ratting}",
-                                                  style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'bold'),
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.white,
+                                                      fontFamily: 'bold'),
                                                 ),
                                               ),
                                             ),
@@ -167,26 +179,43 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                         thickness: dividerWidth,
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: hor_padding),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: hor_padding),
                                         child: FutureBuilder<AllalbumData>(
-                                            future: _marchantProvider.getCategories1(),
+                                            future: _marchantProvider
+                                                .getCategories1(),
                                             builder: (context, snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return SizedBox();
+                                              }
                                               if (dropDownValue == null) {
-                                                dropDownValue = _marchantProvider.marchantService.MarchantServiceDatas.first;
+                                                dropDownValue =
+                                                    _marchantProvider
+                                                        .marchantService
+                                                        .MarchantServiceDatas
+                                                        .first;
                                               }
                                               if (snapshot.hasData) {
                                                 final data = snapshot.data;
                                                 return Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Text(
                                                           'Recent Uploads',
                                                           maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: TextStyle(fontSize: 16, color: thirdColor, fontFamily: 'bold'),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color: thirdColor,
+                                                              fontFamily:
+                                                                  'bold'),
                                                         ),
                                                         Expanded(
                                                           child: InkWell(
@@ -194,17 +223,28 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder: (_) => AllPictureGrid(
-                                                                            name: widget.name,
-                                                                            reating: widget.ratting,
+                                                                      builder: (_) =>
+                                                                          AllPictureGrid(
+                                                                            name:
+                                                                                widget.name,
+                                                                            reating:
+                                                                                widget.ratting,
                                                                           )));
                                                             },
                                                             child: Text(
                                                               'See all (${data!.images.length})',
-                                                              textAlign: TextAlign.end,
+                                                              textAlign:
+                                                                  TextAlign.end,
                                                               maxLines: 1,
-                                                              overflow: TextOverflow.ellipsis,
-                                                              style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  color:
+                                                                      primaryColor,
+                                                                  fontFamily:
+                                                                      'bold'),
                                                             ),
                                                           ),
                                                         ),
@@ -219,7 +259,9 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                               SizedBox(
                                                                 height: 10,
                                                               ),
-                                                              Center(child: Text("No Data")),
+                                                              Center(
+                                                                  child: Text(
+                                                                      "No Data")),
                                                               SizedBox(
                                                                 height: 10,
                                                               ),
@@ -227,35 +269,47 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                           )
                                                         : Container(
                                                             height: 80,
-                                                            child: ListView.builder(
-                                                                itemCount: data.images.length,
-                                                                scrollDirection: Axis.horizontal,
-                                                                itemBuilder: (context, index) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets.only(right: 8.0),
-                                                                    child: InkWell(
-                                                                      onTap: () {
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(
-                                                                                builder: (_) => SinglePicture(
-                                                                                      name: widget.name,
-                                                                                      image: data.images[index].name,
-                                                                                      id: data.images[index].id,
-                                                                                    )));
-                                                                      },
-                                                                      child: Container(
-                                                                        height: 80,
-                                                                        width: 80,
-                                                                        decoration: BoxDecoration(
-                                                                            color: thirdColor,
-                                                                            borderRadius: BorderRadius.circular(cardRadius),
-                                                                            image: DecorationImage(
-                                                                                image: NetworkImage(data.images[index].name), fit: BoxFit.cover)),
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }),
+                                                            child: ListView
+                                                                .builder(
+                                                                    itemCount: data
+                                                                        .images
+                                                                        .length,
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .horizontal,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            index) {
+                                                                      return Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(right: 8.0),
+                                                                        child:
+                                                                            InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                MaterialPageRoute(
+                                                                                    builder: (_) => SinglePicture(
+                                                                                          name: widget.name,
+                                                                                          image: data.images[index].name,
+                                                                                          id: data.images[index].id,
+                                                                                        )));
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                80,
+                                                                            width:
+                                                                                80,
+                                                                            decoration: BoxDecoration(
+                                                                                color: thirdColor,
+                                                                                borderRadius: BorderRadius.circular(cardRadius),
+                                                                                image: DecorationImage(image: NetworkImage(data.images[index].name), fit: BoxFit.cover)),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    }),
                                                           ),
                                                     SizedBox(
                                                       height: 10,
@@ -264,7 +318,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                       'Select Service',
                                                       textAlign: TextAlign.end,
                                                       maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         fontSize: 11,
                                                         color: thirdColor,
@@ -274,31 +329,50 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                       height: 10,
                                                     ),
                                                     Container(
-                                                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 20.0),
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
-                                                        border: Border.all(color: reversationCardBorder),
-                                                        borderRadius: BorderRadius.circular(cardRadius),
+                                                        border: Border.all(
+                                                            color:
+                                                                reversationCardBorder),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    cardRadius),
                                                       ),
-                                                      child: DropdownButtonHideUnderline(
-                                                        child: DropdownButton<MarchantServiceData>(
+                                                      child:
+                                                          DropdownButtonHideUnderline(
+                                                        child: DropdownButton<
+                                                            MarchantServiceData>(
                                                           value: dropDownValue,
                                                           isExpanded: true,
-                                                          items: _marchantProvider.marchantService.MarchantServiceDatas
+                                                          items: _marchantProvider
+                                                              .marchantService
+                                                              .MarchantServiceDatas
                                                               .map(
-                                                                (e) => DropdownMenuItem(
+                                                                (e) =>
+                                                                    DropdownMenuItem(
                                                                   child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
                                                                     children: [
                                                                       Column(
-                                                                        mainAxisSize: MainAxisSize.min,
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
                                                                         children: [
                                                                           Text(
                                                                             '${e.serviceTitle}',
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            style: TextStyle(
+                                                                            maxLines:
+                                                                                1,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style:
+                                                                                TextStyle(
                                                                               fontSize: 13,
                                                                               color: cardSubTextColor,
                                                                               fontFamily: 'bold',
@@ -306,9 +380,12 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                           ),
                                                                           Text(
                                                                             '${e.estimatedTime} minutes',
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            style: TextStyle(
+                                                                            maxLines:
+                                                                                1,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style:
+                                                                                TextStyle(
                                                                               fontSize: 11,
                                                                               color: cardSubTextColor,
                                                                             ),
@@ -317,15 +394,25 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                       ),
                                                                       Container(
                                                                         decoration: BoxDecoration(
-                                                                            color: Color(0xfff9f9f9), borderRadius: BorderRadius.circular(5)),
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-                                                                          child: Text(
+                                                                            color:
+                                                                                Color(0xfff9f9f9),
+                                                                            borderRadius: BorderRadius.circular(5)),
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: const EdgeInsets.symmetric(
+                                                                              vertical: 6,
+                                                                              horizontal: 4),
+                                                                          child:
+                                                                              Text(
                                                                             '\$${e.serviceCharged}',
-                                                                            maxLines: 1,
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                            style:
-                                                                                TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
+                                                                            maxLines:
+                                                                                1,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style: TextStyle(
+                                                                                fontSize: 14,
+                                                                                color: Color(0xffffb169),
+                                                                                fontFamily: 'bold'),
                                                                           ),
                                                                         ),
                                                                       ),
@@ -333,8 +420,11 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                   ),
                                                                   value: e,
                                                                   onTap: () {
-                                                                    SelectService.add(e);
-                                                                    snackbar('Your service was added', context);
+                                                                    SelectService
+                                                                        .add(e);
+                                                                    snackbar(
+                                                                        'Your service was added',
+                                                                        context);
                                                                     calculateSum();
                                                                     texsum();
                                                                   },
@@ -344,7 +434,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                           onChanged: (service) {
                                                             setState(
                                                               () {
-                                                                dropDownValue = service!;
+                                                                dropDownValue =
+                                                                    service!;
                                                               },
                                                             );
                                                           },
@@ -352,12 +443,15 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                       ),
                                                     ),
                                                     Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Text(
                                                           'Hire Our Home Services',
                                                           maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                           style: TextStyle(
                                                             fontSize: 11,
                                                             color: thirdColor,
@@ -367,14 +461,17 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                             value: switchValue,
                                                             onChanged: (v) {
                                                               setState(() {
-                                                                switchValue = !switchValue;
+                                                                switchValue =
+                                                                    !switchValue;
                                                               });
                                                             })
                                                       ],
                                                     ),
                                                     if (switchValue)
                                                       Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           // Container(
                                                           //   width: size.width,
@@ -457,32 +554,44 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                           // ),
                                                           Container(
                                                             decoration: BoxDecoration(
-                                                                color: Colors.white,
-                                                                border: Border.all(color: reversationCardBorder),
-                                                                borderRadius: BorderRadius.circular(cardRadius)),
+                                                                color: Colors
+                                                                    .white,
+                                                                border: Border.all(
+                                                                    color:
+                                                                        reversationCardBorder),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            cardRadius)),
                                                             child: Column(
                                                               children: [
                                                                 Row(
                                                                   children: [
                                                                     Container(
                                                                       width: 5,
-                                                                      height: 50,
+                                                                      height:
+                                                                          50,
                                                                       decoration: BoxDecoration(
                                                                           color: switchValue ? primaryColor : cardSubTextColor,
                                                                           borderRadius: BorderRadius.only(
-                                                                            topLeft: Radius.circular(cardRadius),
-                                                                            bottomLeft: Radius.circular(cardRadius),
+                                                                            topLeft:
+                                                                                Radius.circular(cardRadius),
+                                                                            bottomLeft:
+                                                                                Radius.circular(cardRadius),
                                                                           )),
                                                                     ),
                                                                     Expanded(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                        child: Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(horizontal: 20),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
                                                                           children: [
                                                                             CircleAvatar(
-                                                                              backgroundImage: NetworkImage(
-                                                                                  'https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F61688aa1d4a8658c3f4d8640%2FAntonio-Juliano%2F0x0.jpg%3Ffit%3Dscale'),
+                                                                              backgroundImage: NetworkImage('https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F61688aa1d4a8658c3f4d8640%2FAntonio-Juliano%2F0x0.jpg%3Ffit%3Dscale'),
                                                                             ),
                                                                             Expanded(
                                                                               child: Padding(
@@ -499,10 +608,7 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                                             'Regular Haircut',
                                                                                             maxLines: 1,
                                                                                             overflow: TextOverflow.ellipsis,
-                                                                                            style: TextStyle(
-                                                                                                fontSize: 13,
-                                                                                                color: cardSubTextColor,
-                                                                                                fontFamily: 'bold'),
+                                                                                            style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
                                                                                           ),
                                                                                           Text(
                                                                                             '45 minutes',
@@ -517,20 +623,14 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                                       ),
                                                                                     ),
                                                                                     Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Color(0xfffee7cc),
-                                                                                          borderRadius: BorderRadius.circular(5)),
+                                                                                      decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
                                                                                       child: Padding(
-                                                                                        padding:
-                                                                                            const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                                                                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                                                                                         child: Text(
                                                                                           '\$18',
                                                                                           maxLines: 1,
                                                                                           overflow: TextOverflow.ellipsis,
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 14,
-                                                                                              color: Color(0xffffb169),
-                                                                                              fontFamily: 'bold'),
+                                                                                          style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -572,7 +672,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     Text(
                                                       'Date & Time',
                                                       maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         fontSize: 11,
                                                         color: thirdColor,
@@ -583,13 +684,17 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     ),
                                                     CalendarWidget(
                                                       date: (s) {
-                                                        log("$s", name: "Date Of Order");
+                                                        log("$s",
+                                                            name:
+                                                                "Date Of Order");
                                                         setState(() {
                                                           selectDate = s;
                                                         });
                                                       },
                                                       time: (d) {
-                                                        log("$d", name: "Time Of Order");
+                                                        log("$d",
+                                                            name:
+                                                                "Time Of Order");
                                                         setState(() {
                                                           selectTime = d;
                                                         });
@@ -598,14 +703,19 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     SizedBox(
                                                       height: 20,
                                                     ),
-                                                    if (SelectService.length > 0)
+                                                    if (SelectService.length >
+                                                        0)
                                                       Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           Text(
                                                             'Your Selected Services',
                                                             maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             style: TextStyle(
                                                               fontSize: 11,
                                                               color: thirdColor,
@@ -615,115 +725,119 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                             height: 10,
                                                           ),
                                                           Container(
-                                                              height: (65 * SelectService.length).toDouble(),
-                                                              child: ListView.builder(
-                                                                  physics: NeverScrollableScrollPhysics(),
-                                                                  itemCount: SelectService.length,
-                                                                  itemBuilder: (context, index) {
-                                                                    return Padding(
-                                                                      padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                      child: Container(
-                                                                        width: size.width,
-                                                                        decoration: BoxDecoration(
-                                                                            color: Colors.white,
-                                                                            border: Border.all(color: reversationCardBorder),
-                                                                            borderRadius: BorderRadius.circular(cardRadius)),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            Container(
-                                                                              width: 5,
-                                                                              height: 50,
-                                                                              decoration: BoxDecoration(
-                                                                                  color: primaryColor,
-                                                                                  borderRadius: BorderRadius.only(
-                                                                                    topLeft: Radius.circular(cardRadius),
-                                                                                    bottomLeft: Radius.circular(cardRadius),
-                                                                                  )),
-                                                                            ),
-                                                                            Expanded(
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                                child: Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                  children: [
-                                                                                    Expanded(
-                                                                                      flex: 2,
-                                                                                      child: Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children: [
-                                                                                          Text(
-                                                                                            '${SelectService.elementAt(index).serviceTitle}',
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.ellipsis,
-                                                                                            style: TextStyle(
-                                                                                                fontSize: 13,
-                                                                                                color: cardSubTextColor,
-                                                                                                fontFamily: 'bold'),
+                                                              height: (65 *
+                                                                      SelectService
+                                                                          .length)
+                                                                  .toDouble(),
+                                                              child: ListView
+                                                                  .builder(
+                                                                      physics:
+                                                                          NeverScrollableScrollPhysics(),
+                                                                      itemCount:
+                                                                          SelectService
+                                                                              .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        return Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.symmetric(vertical: 8),
+                                                                          child:
+                                                                              Container(
+                                                                            width:
+                                                                                size.width,
+                                                                            decoration: BoxDecoration(
+                                                                                color: Colors.white,
+                                                                                border: Border.all(color: reversationCardBorder),
+                                                                                borderRadius: BorderRadius.circular(cardRadius)),
+                                                                            child:
+                                                                                Row(
+                                                                              children: [
+                                                                                Container(
+                                                                                  width: 5,
+                                                                                  height: 50,
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: primaryColor,
+                                                                                      borderRadius: BorderRadius.only(
+                                                                                        topLeft: Radius.circular(cardRadius),
+                                                                                        bottomLeft: Radius.circular(cardRadius),
+                                                                                      )),
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                    child: Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                      children: [
+                                                                                        Expanded(
+                                                                                          flex: 2,
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              Text(
+                                                                                                '${SelectService.elementAt(index).serviceTitle}',
+                                                                                                maxLines: 1,
+                                                                                                overflow: TextOverflow.ellipsis,
+                                                                                                style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
+                                                                                              ),
+                                                                                              Text(
+                                                                                                '${SelectService.elementAt(index).estimatedTime} minutes',
+                                                                                                maxLines: 1,
+                                                                                                overflow: TextOverflow.ellipsis,
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 11,
+                                                                                                  color: cardSubTextColor,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
                                                                                           ),
-                                                                                          Text(
-                                                                                            '${SelectService.elementAt(index).estimatedTime} minutes',
-                                                                                            maxLines: 1,
-                                                                                            overflow: TextOverflow.ellipsis,
-                                                                                            style: TextStyle(
-                                                                                              fontSize: 11,
-                                                                                              color: cardSubTextColor,
+                                                                                        ),
+                                                                                        Container(
+                                                                                          decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
+                                                                                          child: Padding(
+                                                                                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                                                                                            child: Text(
+                                                                                              '\$${SelectService.elementAt(index).serviceCharged}',
+                                                                                              maxLines: 1,
+                                                                                              overflow: TextOverflow.ellipsis,
+                                                                                              style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
                                                                                             ),
                                                                                           ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                    Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: Color(0xfffee7cc),
-                                                                                          borderRadius: BorderRadius.circular(5)),
-                                                                                      child: Padding(
-                                                                                        padding:
-                                                                                            const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-                                                                                        child: Text(
-                                                                                          '\$${SelectService.elementAt(index).serviceCharged}',
-                                                                                          maxLines: 1,
-                                                                                          overflow: TextOverflow.ellipsis,
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 14,
-                                                                                              color: Color(0xffffb169),
-                                                                                              fontFamily: 'bold'),
                                                                                         ),
-                                                                                      ),
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: 20,
-                                                                                    ),
-                                                                                    InkWell(
-                                                                                      onTap: () {
-                                                                                        if (SelectService.length > 0) {
-                                                                                          setState(() {
-                                                                                            SelectService.remove(SelectService.elementAt(index));
-                                                                                            // SelectService.contains(index)
-                                                                                            //     ? sum
-                                                                                            //     : sum -= int.parse(_marchantProvider.marchantService.MarchantServiceDatas[index].serviceCharged);
-                                                                                            // : sum;
-                                                                                            /*                            SelectService.remove(_marchantProvider
+                                                                                        SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap: () {
+                                                                                            if (SelectService.length > 0) {
+                                                                                              setState(() {
+                                                                                                SelectService.remove(SelectService.elementAt(index));
+                                                                                                // SelectService.contains(index)
+                                                                                                //     ? sum
+                                                                                                //     : sum -= int.parse(_marchantProvider.marchantService.MarchantServiceDatas[index].serviceCharged);
+                                                                                                // : sum;
+                                                                                                /*                            SelectService.remove(_marchantProvider
                                                                                   .marchantService
                                                                                   .MarchantServiceDatas[index]);*/
-                                                                                            calculateSum();
-                                                                                            texsum();
-                                                                                          });
-                                                                                        }
-                                                                                      },
-                                                                                      child: Icon(
-                                                                                        Icons.close,
-                                                                                        color: Color(0xfff22626),
-                                                                                      ),
-                                                                                    )
-                                                                                  ],
+                                                                                                calculateSum();
+                                                                                                texsum();
+                                                                                              });
+                                                                                            }
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.close,
+                                                                                            color: Color(0xfff22626),
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
                                                                                 ),
-                                                                              ),
+                                                                              ],
                                                                             ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  })),
+                                                                          ),
+                                                                        );
+                                                                      })),
                                                         ],
                                                       ),
                                                     SizedBox(
@@ -733,28 +847,47 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                 );
                                               }
                                               return Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Text(
                                                         'Recent Uploads',
                                                         maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(fontSize: 16, color: thirdColor, fontFamily: 'bold'),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: thirdColor,
+                                                            fontFamily: 'bold'),
                                                       ),
                                                       Expanded(
                                                         child: InkWell(
                                                           onTap: () {
-                                                            Navigator.push(context, MaterialPageRoute(builder: (_) => AllPictureGrid()));
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        AllPictureGrid()));
                                                           },
                                                           child: Text(
                                                             'See all (0)',
-                                                            textAlign: TextAlign.end,
+                                                            textAlign:
+                                                                TextAlign.end,
                                                             maxLines: 1,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color:
+                                                                    primaryColor,
+                                                                fontFamily:
+                                                                    'bold'),
                                                           ),
                                                         ),
                                                       ),
@@ -767,19 +900,33 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     height: 80,
                                                     child: ListView.builder(
                                                         itemCount: 5,
-                                                        scrollDirection: Axis.horizontal,
-                                                        itemBuilder: (context, index) {
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemBuilder:
+                                                            (context, index) {
                                                           return Padding(
-                                                            padding: const EdgeInsets.only(right: 8.0),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 8.0),
                                                             child: InkWell(
                                                               onTap: () {
-                                                                Navigator.push(context, MaterialPageRoute(builder: (_) => SinglePicture()));
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (_) =>
+                                                                                SinglePicture()));
                                                               },
                                                               child: Container(
                                                                 height: 80,
                                                                 width: 80,
-                                                                decoration:
-                                                                    BoxDecoration(color: thirdColor, borderRadius: BorderRadius.circular(cardRadius)),
+                                                                decoration: BoxDecoration(
+                                                                    color:
+                                                                        thirdColor,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            cardRadius)),
                                                               ),
                                                             ),
                                                           );
@@ -792,7 +939,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     'Select Service',
                                                     textAlign: TextAlign.end,
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                       fontSize: 11,
                                                       color: thirdColor,
@@ -802,58 +950,99 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     height: 10,
                                                   ),
                                                   Container(
-                                                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20.0),
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
-                                                      border: Border.all(color: reversationCardBorder),
-                                                      borderRadius: BorderRadius.circular(cardRadius),
+                                                      border: Border.all(
+                                                          color:
+                                                              reversationCardBorder),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              cardRadius),
                                                     ),
-                                                    child: DropdownButtonHideUnderline(
-                                                      child: DropdownButton<MarchantServiceData>(
+                                                    child:
+                                                        DropdownButtonHideUnderline(
+                                                      child: DropdownButton<
+                                                          MarchantServiceData>(
                                                         value: dropDownValue,
                                                         isExpanded: true,
-                                                        items: _marchantProvider.marchantService.MarchantServiceDatas
+                                                        items: _marchantProvider
+                                                            .marchantService
+                                                            .MarchantServiceDatas
                                                             .map(
-                                                              (e) => DropdownMenuItem(
+                                                              (e) =>
+                                                                  DropdownMenuItem(
                                                                 child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
                                                                   children: [
                                                                     Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children: [
                                                                         Text(
                                                                           '${e.serviceTitle}',
-                                                                          maxLines: 1,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          style: TextStyle(
-                                                                            fontSize: 13,
-                                                                            color: cardSubTextColor,
-                                                                            fontFamily: 'bold',
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                13,
+                                                                            color:
+                                                                                cardSubTextColor,
+                                                                            fontFamily:
+                                                                                'bold',
                                                                           ),
                                                                         ),
                                                                         Text(
                                                                           '${e.estimatedTime} minutes',
-                                                                          maxLines: 1,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          style: TextStyle(
-                                                                            fontSize: 11,
-                                                                            color: cardSubTextColor,
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                11,
+                                                                            color:
+                                                                                cardSubTextColor,
                                                                           ),
                                                                         ),
                                                                       ],
                                                                     ),
                                                                     Container(
                                                                       decoration: BoxDecoration(
-                                                                          color: Color(0xfff9f9f9), borderRadius: BorderRadius.circular(5)),
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-                                                                        child: Text(
+                                                                          color: Color(
+                                                                              0xfff9f9f9),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5)),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                6,
+                                                                            horizontal:
+                                                                                4),
+                                                                        child:
+                                                                            Text(
                                                                           '\$${e.serviceCharged}',
-                                                                          maxLines: 1,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          style:
-                                                                              TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              color: Color(0xffffb169),
+                                                                              fontFamily: 'bold'),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -861,8 +1050,11 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                 ),
                                                                 value: e,
                                                                 onTap: () {
-                                                                  SelectService.add(e);
-                                                                  snackbar('Your service was added', context);
+                                                                  SelectService
+                                                                      .add(e);
+                                                                  snackbar(
+                                                                      'Your service was added',
+                                                                      context);
                                                                   calculateSum();
                                                                   texsum();
                                                                 },
@@ -872,7 +1064,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                         onChanged: (service) {
                                                           setState(
                                                             () {
-                                                              dropDownValue = service!;
+                                                              dropDownValue =
+                                                                  service!;
                                                             },
                                                           );
                                                         },
@@ -880,12 +1073,15 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                     ),
                                                   ),
                                                   Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Text(
                                                         'Hire Our Home Services',
                                                         maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: TextStyle(
                                                           fontSize: 11,
                                                           color: thirdColor,
@@ -895,14 +1091,17 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                           value: switchValue,
                                                           onChanged: (v) {
                                                             setState(() {
-                                                              switchValue = !switchValue;
+                                                              switchValue =
+                                                                  !switchValue;
                                                             });
                                                           })
                                                     ],
                                                   ),
                                                   if (switchValue)
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         // Container(
                                                         //   width: size.width,
@@ -985,9 +1184,15 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                         // ),
                                                         Container(
                                                           decoration: BoxDecoration(
-                                                              color: Colors.white,
-                                                              border: Border.all(color: reversationCardBorder),
-                                                              borderRadius: BorderRadius.circular(cardRadius)),
+                                                              color:
+                                                                  Colors.white,
+                                                              border: Border.all(
+                                                                  color:
+                                                                      reversationCardBorder),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          cardRadius)),
                                                           child: Column(
                                                             children: [
                                                               Row(
@@ -995,25 +1200,36 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                   Container(
                                                                     width: 5,
                                                                     height: 50,
-                                                                    decoration: BoxDecoration(
-                                                                        color: switchValue ? primaryColor : cardSubTextColor,
-                                                                        borderRadius: BorderRadius.only(
-                                                                          topLeft: Radius.circular(cardRadius),
-                                                                          bottomLeft: Radius.circular(cardRadius),
-                                                                        )),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                            color: switchValue
+                                                                                ? primaryColor
+                                                                                : cardSubTextColor,
+                                                                            borderRadius:
+                                                                                BorderRadius.only(
+                                                                              topLeft: Radius.circular(cardRadius),
+                                                                              bottomLeft: Radius.circular(cardRadius),
+                                                                            )),
                                                                   ),
                                                                   Expanded(
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                          horizontal:
+                                                                              20),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
                                                                         children: [
                                                                           CircleAvatar(
-                                                                            backgroundImage: NetworkImage(
-                                                                                'https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F61688aa1d4a8658c3f4d8640%2FAntonio-Juliano%2F0x0.jpg%3Ffit%3Dscale'),
+                                                                            backgroundImage:
+                                                                                NetworkImage('https://thumbor.forbes.com/thumbor/960x0/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F61688aa1d4a8658c3f4d8640%2FAntonio-Juliano%2F0x0.jpg%3Ffit%3Dscale'),
                                                                           ),
                                                                           Expanded(
-                                                                            child: Padding(
+                                                                            child:
+                                                                                Padding(
                                                                               padding: const EdgeInsets.symmetric(horizontal: 20),
                                                                               child: Row(
                                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1027,10 +1243,7 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                                           'Regular Haircut',
                                                                                           maxLines: 1,
                                                                                           overflow: TextOverflow.ellipsis,
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: cardSubTextColor,
-                                                                                              fontFamily: 'bold'),
+                                                                                          style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
                                                                                         ),
                                                                                         Text(
                                                                                           '45 minutes',
@@ -1045,19 +1258,14 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                                                     ),
                                                                                   ),
                                                                                   Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                        color: Color(0xfffee7cc),
-                                                                                        borderRadius: BorderRadius.circular(5)),
+                                                                                    decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                                                                                       child: Text(
                                                                                         '\$18',
                                                                                         maxLines: 1,
                                                                                         overflow: TextOverflow.ellipsis,
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Color(0xffffb169),
-                                                                                            fontFamily: 'bold'),
+                                                                                        style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -1099,7 +1307,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                   Text(
                                                     'Date & Time',
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                       fontSize: 11,
                                                       color: thirdColor,
@@ -1114,12 +1323,15 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                   ),
                                                   if (SelectService.length > 0)
                                                     Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                           'Your Selected Services',
                                                           maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                           style: TextStyle(
                                                             fontSize: 11,
                                                             color: thirdColor,
@@ -1129,114 +1341,119 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                           height: 10,
                                                         ),
                                                         Container(
-                                                            height: (65 * SelectService.length).toDouble(),
-                                                            child: ListView.builder(
-                                                                physics: NeverScrollableScrollPhysics(),
-                                                                itemCount: SelectService.length,
-                                                                itemBuilder: (context, index) {
-                                                                  return Padding(
-                                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                    child: Container(
-                                                                      width: size.width,
-                                                                      decoration: BoxDecoration(
-                                                                          color: Colors.white,
-                                                                          border: Border.all(color: reversationCardBorder),
-                                                                          borderRadius: BorderRadius.circular(cardRadius)),
-                                                                      child: Row(
-                                                                        children: [
-                                                                          Container(
-                                                                            width: 5,
-                                                                            height: 50,
-                                                                            decoration: BoxDecoration(
-                                                                                color: primaryColor,
-                                                                                borderRadius: BorderRadius.only(
-                                                                                  topLeft: Radius.circular(cardRadius),
-                                                                                  bottomLeft: Radius.circular(cardRadius),
-                                                                                )),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Padding(
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  Expanded(
-                                                                                    flex: 2,
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          '${SelectService.elementAt(index).serviceTitle}',
-                                                                                          maxLines: 1,
-                                                                                          overflow: TextOverflow.ellipsis,
-                                                                                          style: TextStyle(
-                                                                                              fontSize: 13,
-                                                                                              color: cardSubTextColor,
-                                                                                              fontFamily: 'bold'),
+                                                            height: (65 *
+                                                                    SelectService
+                                                                        .length)
+                                                                .toDouble(),
+                                                            child: ListView
+                                                                .builder(
+                                                                    physics:
+                                                                        NeverScrollableScrollPhysics(),
+                                                                    itemCount:
+                                                                        SelectService
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            index) {
+                                                                      return Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(vertical: 8),
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              size.width,
+                                                                          decoration: BoxDecoration(
+                                                                              color: Colors.white,
+                                                                              border: Border.all(color: reversationCardBorder),
+                                                                              borderRadius: BorderRadius.circular(cardRadius)),
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Container(
+                                                                                width: 5,
+                                                                                height: 50,
+                                                                                decoration: BoxDecoration(
+                                                                                    color: primaryColor,
+                                                                                    borderRadius: BorderRadius.only(
+                                                                                      topLeft: Radius.circular(cardRadius),
+                                                                                      bottomLeft: Radius.circular(cardRadius),
+                                                                                    )),
+                                                                              ),
+                                                                              Expanded(
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                  child: Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      Expanded(
+                                                                                        flex: 2,
+                                                                                        child: Column(
+                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                          children: [
+                                                                                            Text(
+                                                                                              '${SelectService.elementAt(index).serviceTitle}',
+                                                                                              maxLines: 1,
+                                                                                              overflow: TextOverflow.ellipsis,
+                                                                                              style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
+                                                                                            ),
+                                                                                            Text(
+                                                                                              '${SelectService.elementAt(index).estimatedTime} minutes',
+                                                                                              maxLines: 1,
+                                                                                              overflow: TextOverflow.ellipsis,
+                                                                                              style: TextStyle(
+                                                                                                fontSize: 11,
+                                                                                                color: cardSubTextColor,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
                                                                                         ),
-                                                                                        Text(
-                                                                                          '${SelectService.elementAt(index).estimatedTime} minutes',
-                                                                                          maxLines: 1,
-                                                                                          overflow: TextOverflow.ellipsis,
-                                                                                          style: TextStyle(
-                                                                                            fontSize: 11,
-                                                                                            color: cardSubTextColor,
+                                                                                      ),
+                                                                                      Container(
+                                                                                        decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                                                                                          child: Text(
+                                                                                            '\$${SelectService.elementAt(index).serviceCharged}',
+                                                                                            maxLines: 1,
+                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                            style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
                                                                                           ),
                                                                                         ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                  Container(
-                                                                                    decoration: BoxDecoration(
-                                                                                        color: Color(0xfffee7cc),
-                                                                                        borderRadius: BorderRadius.circular(5)),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-                                                                                      child: Text(
-                                                                                        '\$${SelectService.elementAt(index).serviceCharged}',
-                                                                                        maxLines: 1,
-                                                                                        overflow: TextOverflow.ellipsis,
-                                                                                        style: TextStyle(
-                                                                                            fontSize: 14,
-                                                                                            color: Color(0xffffb169),
-                                                                                            fontFamily: 'bold'),
                                                                                       ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    width: 20,
-                                                                                  ),
-                                                                                  InkWell(
-                                                                                    onTap: () {
-                                                                                      if (SelectService.length > 0) {
-                                                                                        setState(() {
-                                                                                          SelectService.remove(SelectService.elementAt(index));
-                                                                                          // SelectService.contains(index)
-                                                                                          //     ? sum
-                                                                                          //     : sum -= int.parse(_marchantProvider.marchantService.MarchantServiceDatas[index].serviceCharged);
-                                                                                          // : sum;
-                                                                                          /*                            SelectService.remove(_marchantProvider
+                                                                                      SizedBox(
+                                                                                        width: 20,
+                                                                                      ),
+                                                                                      InkWell(
+                                                                                        onTap: () {
+                                                                                          if (SelectService.length > 0) {
+                                                                                            setState(() {
+                                                                                              SelectService.remove(SelectService.elementAt(index));
+                                                                                              // SelectService.contains(index)
+                                                                                              //     ? sum
+                                                                                              //     : sum -= int.parse(_marchantProvider.marchantService.MarchantServiceDatas[index].serviceCharged);
+                                                                                              // : sum;
+                                                                                              /*                            SelectService.remove(_marchantProvider
                                                                                   .marchantService
                                                                                   .MarchantServiceDatas[index]);*/
-                                                                                          calculateSum();
-                                                                                          texsum();
-                                                                                        });
-                                                                                      }
-                                                                                    },
-                                                                                    child: Icon(
-                                                                                      Icons.close,
-                                                                                      color: Color(0xfff22626),
-                                                                                    ),
-                                                                                  )
-                                                                                ],
+                                                                                              calculateSum();
+                                                                                              texsum();
+                                                                                            });
+                                                                                          }
+                                                                                        },
+                                                                                        child: Icon(
+                                                                                          Icons.close,
+                                                                                          color: Color(0xfff22626),
+                                                                                        ),
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
                                                                               ),
-                                                                            ),
+                                                                            ],
                                                                           ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                })),
+                                                                        ),
+                                                                      );
+                                                                    })),
                                                       ],
                                                     ),
                                                   SizedBox(
@@ -1254,9 +1471,11 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                         height: 10,
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: hor_padding),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: hor_padding),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Payment',
@@ -1315,7 +1534,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                   onTap: () {
                                                     showModalBottomSheet(
                                                         isDismissible: true,
-                                                        isScrollControlled: true,
+                                                        isScrollControlled:
+                                                            true,
                                                         context: context,
                                                         builder: (context) {
                                                           return CommentScreen();
@@ -1324,8 +1544,12 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                   child: Text(
                                                     'Leave a note or special instruction for merchant',
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 12, color: Color(0xffb8b8b8)),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color:
+                                                            Color(0xffb8b8b8)),
                                                   ),
                                                 )
                                               ],
@@ -1351,7 +1575,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                     height: 82,
                     color: primaryColor,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
                       child: Center(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1365,7 +1590,10 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                   '\$$TotalSum',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'bold'),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontFamily: 'bold'),
                                 ),
                                 Text(
                                   'Tax \$$TotalTax',
@@ -1396,8 +1624,10 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                         child: ProfileTemplate(
                                           widget: ProfileTemplate(
                                             widget: CardDetail(
-                                              amount: double.parse(TotalSum) + double.parse(TotalTax),
-                                              marchantId: _marchantProvider.marchantId,
+                                              amount: double.parse(TotalSum) +
+                                                  double.parse(TotalTax),
+                                              marchantId:
+                                                  _marchantProvider.marchantId,
                                               selectDate: selectDate,
                                               selectTime: selectTime,
                                               agentID: '',
@@ -1405,7 +1635,8 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                               SelectService: SelectService,
                                             ),
                                             name: 'Payment',
-                                            url: 'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
+                                            url:
+                                                'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
                                             extraImage: false,
                                           ),
                                           name: 'Payment',
@@ -1420,12 +1651,15 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                                       name: 'Payment History',
                                                       extraImage: false,
                                                       appBarButton: IconButton(
-                                                        icon: Icon(Icons.filter_alt),
+                                                        icon: Icon(
+                                                            Icons.filter_alt),
                                                         onPressed: () {
                                                           showModalBottomSheet(
-                                                              isScrollControlled: false,
+                                                              isScrollControlled:
+                                                                  false,
                                                               context: context,
-                                                              builder: (context) {
+                                                              builder:
+                                                                  (context) {
                                                                 return Schedule();
                                                               });
                                                         },
@@ -1440,17 +1674,26 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                               );
                                             },
                                             child: Container(
-                                              decoration: BoxDecoration(color: Color(0xff454545), borderRadius: BorderRadius.circular(3)),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff454545),
+                                                  borderRadius:
+                                                      BorderRadius.circular(3)),
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 2,
+                                                        horizontal: 8),
                                                 child: Text(
                                                   'History',
-                                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                          url: 'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
+                                          url:
+                                              'https://cdn.trendhunterstatic.com/thumbs/mastercard-logo.jpeg',
                                           extraImage: true,
                                         ),
                                       );
@@ -1467,12 +1710,18 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                                 });
                               },
                               child: Container(
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(5)),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 10),
                                   child: Text(
                                     'Book Now',
-                                    style: TextStyle(fontSize: 16, color: thirdColor, fontFamily: 'bold'),
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: thirdColor,
+                                        fontFamily: 'bold'),
                                   ),
                                 ),
                               ),
@@ -1518,7 +1767,10 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                             'Regular Haircut',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: cardSubTextColor,
+                                fontFamily: 'bold'),
                           ),
                           Text(
                             '45 minutes',
@@ -1533,14 +1785,20 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
+                      decoration: BoxDecoration(
+                          color: Color(0xfffee7cc),
+                          borderRadius: BorderRadius.circular(5)),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 4),
                         child: Text(
                           '\$18',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xffffb169),
+                              fontFamily: 'bold'),
                         ),
                       ),
                     ),
@@ -1579,14 +1837,16 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
             ],
           ),
           Container(
-            decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(5)),
+            decoration: BoxDecoration(
+                color: primaryColor, borderRadius: BorderRadius.circular(5)),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
               child: Text(
                 4.8.toString(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'bold'),
+                style: TextStyle(
+                    fontSize: 16, color: Colors.white, fontFamily: 'bold'),
               ),
             ),
           )
@@ -1609,7 +1869,9 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
           //         Servicedata.MarchantServiceDatas[index].serviceCharged)
           // : sum;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(milliseconds: 400), content: Text("Added ${Servicedata.MarchantServiceDatas[index].serviceTitle} Service")));
+              duration: Duration(milliseconds: 400),
+              content: Text(
+                  "Added ${Servicedata.MarchantServiceDatas[index].serviceTitle} Service")));
           yourservice = yourservice + 1;
         });
       },
@@ -1642,7 +1904,10 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                             '${Servicedata.MarchantServiceDatas[index].serviceTitle}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 13, color: cardSubTextColor, fontFamily: 'bold'),
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: cardSubTextColor,
+                                fontFamily: 'bold'),
                           ),
                           Text(
                             '${Servicedata.MarchantServiceDatas[index].estimatedTime} minutes',
@@ -1657,14 +1922,20 @@ class _ReservationScreenState extends State<ReservationScreen> with SingleTicker
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(color: Color(0xfffee7cc), borderRadius: BorderRadius.circular(5)),
+                      decoration: BoxDecoration(
+                          color: Color(0xfffee7cc),
+                          borderRadius: BorderRadius.circular(5)),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 4),
                         child: Text(
                           '\$${Servicedata.MarchantServiceDatas[index].serviceCharged}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 14, color: Color(0xffffb169), fontFamily: 'bold'),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xffffb169),
+                              fontFamily: 'bold'),
                         ),
                       ),
                     ),
@@ -1710,7 +1981,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Column(
       children: [
         Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(cardRadius), border: Border.all(color: Color(0xffe5eced), width: 1)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(cardRadius),
+              border: Border.all(color: Color(0xffe5eced), width: 1)),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TableCalendar(
@@ -1723,17 +1996,27 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               calendarFormat: CalendarFormat.week,
               onFormatChanged: (v) {},
               calendarStyle: CalendarStyle(
-                  selectedDecoration: BoxDecoration(color: Color(0xFF12425A), shape: BoxShape.circle),
-                  outsideDecoration: BoxDecoration(color: Color(0xfff6f8f9), shape: BoxShape.circle),
-                  defaultDecoration: BoxDecoration(color: Color(0xfff6f8f9), shape: BoxShape.circle),
-                  weekendDecoration: BoxDecoration(color: Color(0xfff6f8f9), shape: BoxShape.circle),
+                  selectedDecoration: BoxDecoration(
+                      color: Color(0xFF12425A), shape: BoxShape.circle),
+                  outsideDecoration: BoxDecoration(
+                      color: Color(0xfff6f8f9), shape: BoxShape.circle),
+                  defaultDecoration: BoxDecoration(
+                      color: Color(0xfff6f8f9), shape: BoxShape.circle),
+                  weekendDecoration: BoxDecoration(
+                      color: Color(0xfff6f8f9), shape: BoxShape.circle),
                   selectedTextStyle: TextStyle(color: Colors.white),
-                  defaultTextStyle: TextStyle(fontFamily: 'bold', fontSize: 15, color: Colors.black),
-                  outsideTextStyle: TextStyle(fontFamily: 'bold', fontSize: 15, color: Colors.black),
-                  weekendTextStyle: TextStyle(fontFamily: 'bold', fontSize: 15, color: Colors.black),
-                  holidayTextStyle: TextStyle(fontFamily: 'bold', fontSize: 15, color: Colors.black),
-                  todayTextStyle: TextStyle(fontFamily: 'bold', fontSize: 15, color: Colors.white),
-                  todayDecoration: BoxDecoration(color: primaryColor, shape: BoxShape.circle)),
+                  defaultTextStyle: TextStyle(
+                      fontFamily: 'bold', fontSize: 15, color: Colors.black),
+                  outsideTextStyle: TextStyle(
+                      fontFamily: 'bold', fontSize: 15, color: Colors.black),
+                  weekendTextStyle: TextStyle(
+                      fontFamily: 'bold', fontSize: 15, color: Colors.black),
+                  holidayTextStyle: TextStyle(
+                      fontFamily: 'bold', fontSize: 15, color: Colors.black),
+                  todayTextStyle: TextStyle(
+                      fontFamily: 'bold', fontSize: 15, color: Colors.white),
+                  todayDecoration: BoxDecoration(
+                      color: primaryColor, shape: BoxShape.circle)),
               firstDay: DateTime.now(),
               lastDay: DateTime.utc(2030, 3, 14),
               focusedDay: now,
@@ -1781,11 +2064,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       child: Container(
                         width: 90,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(cardRadius), color: selectedTimeIndex == index ? primaryColor : Colors.transparent),
+                            borderRadius: BorderRadius.circular(cardRadius),
+                            color: selectedTimeIndex == index
+                                ? primaryColor
+                                : Colors.transparent),
                         child: Center(
                             child: Text(
                           "${t.hour}:${t.minute}",
-                          style: TextStyle(color: index == selectedTimeIndex ? Colors.white : Colors.black, fontSize: 12, fontFamily: 'bold'),
+                          style: TextStyle(
+                              color: index == selectedTimeIndex
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 12,
+                              fontFamily: 'bold'),
                         )),
                       ),
                     );

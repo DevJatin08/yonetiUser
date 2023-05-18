@@ -6,7 +6,7 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Reviews/TopReviews.dart';
 import 'package:userapp/Screen/NavigationScreens/Home/SubScreens/BrandDetails.dart';
 
-class TopFindrCard extends HookWidget {
+class TopFindrCard extends HookConsumerWidget {
   int index;
   Review review;
   TopFindrCard({required this.index, required this.review});
@@ -15,8 +15,8 @@ class TopFindrCard extends HookWidget {
       "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1";
 
   @override
-  Widget build(BuildContext context) {
-    final _merchantProvider = useProvider(marchantProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _merchantProvider = ref.watch(marchantProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),

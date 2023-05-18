@@ -16,19 +16,19 @@ import 'package:userapp/Screen/CommonWidgets/LoadingWidget.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 import 'package:userapp/main.dart';
 
-class LoginScreen extends StatefulHookWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = useProvider(userInfoProvider);
+    final userProvider = ref.watch(userInfoProvider);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
