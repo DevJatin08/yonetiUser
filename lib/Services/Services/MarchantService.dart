@@ -27,7 +27,8 @@ class MarchantService extends ChangeNotifier {
   Result reserveServ = Result(services: []);
 
   // List<ReserveService> reserveService = [];
-  ServiceAgainstdata marchantService = ServiceAgainstdata(MarchantServiceDatas: []);
+  ServiceAgainstdata marchantService =
+      ServiceAgainstdata(MarchantServiceDatas: []);
 
   setMarchantId(String ma_rchantId, String ratings) {
     marchantId = ma_rchantId;
@@ -47,7 +48,8 @@ class MarchantService extends ChangeNotifier {
     final res = await apiCall.apiGetMarchantAllDetails(marchantId: Marchantid);
     print('marchant id = ${Marchantid}');
     // notifyListeners();
-    marchantDetails = MarchantDetail.fromJson(res['result']['marchant_details'][0]);
+    marchantDetails =
+        MarchantDetail.fromJson(res['result']['marchant_details'][0]);
     return marchantDetails;
   }
 
@@ -87,7 +89,8 @@ class MarchantService extends ChangeNotifier {
     String? merchantId,
     String? imageUrl,
   }) async {
-    final res = await apiCall.apiAddCommentPhoto(comments: comments, image_id: image_id, marchant_id: merchantId!);
+    final res = await apiCall.apiAddCommentPhoto(
+        comments: comments, image_id: image_id, marchant_id: merchantId!);
     ResponseData responseData = ResponseData.fromJson(res);
     if (responseData.statusCode!) {
       await apiCall.sendNotification(
@@ -141,8 +144,10 @@ class MarchantService extends ChangeNotifier {
 
   LikeData likeDataEmpty = LikeData(imageCnt: 0);
 
-  Future<LikeData> addLike({required String image_id, String? merchantId, String? imageUrl}) async {
-    final res = await apiCall.apiLike(marchant_id: merchantId!, image_id: image_id);
+  Future<LikeData> addLike(
+      {required String image_id, String? merchantId, String? imageUrl}) async {
+    final res =
+        await apiCall.apiLike(marchant_id: merchantId!, image_id: image_id);
     ResponseData responseData = ResponseData.fromJson(res);
     log("$res", name: "Like Photo API");
 
@@ -166,13 +171,15 @@ class MarchantService extends ChangeNotifier {
     return responseData;
   }
 
-  Future bookingService(
+  Future<dynamic> bookingService(
       {required String marchantId,
       required DateTime orderDate,
       required String time,
       required String totalAmount,
       required String completionTime,
       required String agentID,
+      required String token,
+      required String amount,
       required Set<MarchantServiceData> serviceList}) async {
     List<Map<String, String>> _data = [];
     for (int i = 0; i < serviceList.length; i++) {
@@ -185,6 +192,8 @@ class MarchantService extends ChangeNotifier {
       marchantId: marchantId,
       orderDate: orderDate,
       time: time,
+      token: token,
+      amount: amount,
       agentID: agentID,
       serviceList: _data,
       totalAmount: totalAmount,
@@ -197,5 +206,6 @@ class MarchantService extends ChangeNotifier {
         to: res["device_id"],
       );
     }
+    return res;
   }
 }

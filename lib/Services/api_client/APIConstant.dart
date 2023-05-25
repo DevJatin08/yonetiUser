@@ -45,7 +45,8 @@ const url_topPhotos = 'users_api/Finders/photos';
 const url_addReservation = 'Home/addReservation';
 const url_getAllReviews = 'users_api/Home/getAllReviews';
 const url_orderDetails = 'Marchant_orders/orderDetails';
-const url_getServiceAgainstCategory = 'Marchant_services/getServiceAgainstCategory';
+const url_getServiceAgainstCategory =
+    'Marchant_services/getServiceAgainstCategory';
 const url_getCategoryServices = 'Marchant_services/getCategoryServices';
 const url_packageRequests = 'users_api/Home/packageRequests';
 const url_getChat = 'Common/getChat';
@@ -66,3 +67,6 @@ const url_sendTestPushNotification = 'users_api/Home/sendTestPushNotification';
 
 //swapOrder
 const url_swapBooking = 'users_api/Home/swapBooking';
+
+//payment Hostory
+const url_paymentHistory = "Common/getPaymentHistory";

@@ -4,8 +4,8 @@ import 'package:userapp/Model/Cardinfo/Cardinfo.dart';
 import 'package:userapp/Model/Response/ResponseModel.dart';
 
 class AddCardINfoService extends ChangeNotifier {
-  Cardinfo _cardinfoEmpty = Cardinfo(
-      userId: "", appType: "", cardNo: "", expired: "", cardHolderName: "", cvv: "", createdAt: "");
+  // Cardinfo _cardinfoEmpty = Cardinfo(
+  //     userId: "", appType: "", cardNo: "", expired: "", cardHolderName: "", cvv: "", createdAt: "");
   Future addCardInfo(
       {required String card_no,
       required String expire,
@@ -17,13 +17,15 @@ class AddCardINfoService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Cardinfo> getCardinfo() async {
+  Future<List<CardinfoResult>> getCardinfo() async {
+    Cardinfo data = Cardinfo();
     final res = await apiCall.apiGetCardInfo();
     ResponseData responseData = ResponseData.fromJson(res);
     if (responseData.statusCode!) {
-      return Cardinfo.fromJson(res['result']);
+      data = Cardinfo.fromJson(res);
+      return data.result!;
     } else {
-      return _cardinfoEmpty;
+      return <CardinfoResult>[];
     }
   }
 }

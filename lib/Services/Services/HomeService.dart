@@ -3,11 +3,13 @@ import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Model/Home/HomeAdsPackage.dart';
 import 'package:userapp/Model/Home/HomeCategories.dart';
 import 'package:userapp/Model/Home/HomeMerchantList.dart';
+import 'package:userapp/Model/Home/payment_history_model.dart';
 import 'package:userapp/Model/Response/ResponseModel.dart';
 import 'package:userapp/Screen/CommonWidgets/Snackbar.dart';
 
 class HomeService extends ChangeNotifier {
   HomeCategories homeCategoriesEmpty = HomeCategories(categories: []);
+  PaymentHistoryModel paymentHistory = PaymentHistoryModel();
   HomePackagesDetail packagesDetailsList =
       HomePackagesDetail(packagesDetails: []);
   HomeMerchantCategories homeMerchantCategory =
@@ -27,6 +29,20 @@ class HomeService extends ChangeNotifier {
       return HomeCategories.fromJson(res['result']);
     } else {
       return homeCategoriesEmpty;
+    }
+  }
+
+  Future<PaymentHistoryModel> getPaymentHistory({
+    required String startData,
+    required String lastDate,
+  }) async {
+    final res = await apiCall.apiPaymentHistory(
+        startData: startData, lastDate: lastDate);
+    ResponseData responseData = ResponseData.fromJson(res);
+    if (responseData.statusCode!) {
+      return PaymentHistoryModel.fromJson(res);
+    } else {
+      return paymentHistory;
     }
   }
 

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
 import 'package:userapp/Constant/Global.dart';
@@ -46,6 +47,10 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
   int selectCard = 0;
   MarchantServiceData? dropDownValue;
   Set<MarchantServiceData> SelectService = {};
+
+  String selectedStartDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+  String selectedLastDate = DateFormat("yyyy-MM-dd")
+      .format(DateTime.utc(DateTime.now().year, DateTime.now().month));
 
   double sum = 0;
   int serviceTime = 0;
@@ -1572,7 +1577,7 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
                 ? SizedBox()
                 : Container(
                     width: size.width,
-                    height: 82,
+                    height: 90,
                     color: primaryColor,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -1646,29 +1651,50 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) {
-                                                    return ProfileTemplate(
-                                                      widget: PaymentHistory(),
-                                                      name: 'Payment History',
-                                                      extraImage: false,
-                                                      appBarButton: IconButton(
-                                                        icon: Icon(
-                                                            Icons.filter_alt),
-                                                        onPressed: () {
-                                                          showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return Schedule();
-                                                              });
-                                                        },
-                                                      ),
-                                                      top: Colors.white,
-                                                      bottom: Color(0xff454545),
-                                                      // bottom: Colors.white,
-                                                      // top: primaryColor,
-                                                    );
+                                                    return PaymentHistory();
+                                                    // ProfileTemplate(
+                                                    //   widget: PaymentHistory(
+                                                    //     startDate:
+                                                    //         selectedStartDate,
+                                                    //     lastDate:
+                                                    //         selectedLastDate,
+                                                    //   ),
+                                                    //   name: 'Payment History',
+                                                    //   extraImage: false,
+                                                    //   appBarButton: IconButton(
+                                                    //     icon: Icon(
+                                                    //         Icons.filter_alt),
+                                                    //     onPressed: () {
+                                                    //       showModalBottomSheet(
+                                                    //           isScrollControlled:
+                                                    //               false,
+                                                    //           context: context,
+                                                    //           builder:
+                                                    //               (context) {
+                                                    //             return Schedule(
+                                                    //               onTapList:
+                                                    //                   (selctedList) {
+                                                    //                 selectedStartDate =
+                                                    //                     selctedList[
+                                                    //                         0];
+
+                                                    //                 selectedLastDate =
+                                                    //                     selctedList[
+                                                    //                         1];
+                                                    //                 setState(
+                                                    //                     () {});
+                                                    //                 // log(selctedList
+                                                    //                 //     .toString());
+                                                    //               },
+                                                    //             );
+                                                    //           });
+                                                    //     },
+                                                    //   ),
+                                                    //   top: Colors.white,
+                                                    //   bottom: Color(0xff454545),
+                                                    //   // bottom: Colors.white,
+                                                    //   // top: primaryColor,
+                                                    // );
                                                   },
                                                 ),
                                               );

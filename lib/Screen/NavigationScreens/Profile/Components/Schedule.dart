@@ -13,10 +13,10 @@ final List<int> scheduleDays = [15];
 final List<int> leaveDays = [26];
 
 class Schedule extends StatefulWidget {
-  void Function(List<String>)? onTapList;
+  void Function(List<String>) onTapList;
   Schedule({
     Key? key,
-    this.onTapList,
+    required this.onTapList,
   }) : super(key: key);
 
   @override
@@ -119,7 +119,7 @@ class _ScheduleState extends State<Schedule> {
                 var timefrom = DateFormat('yyyy-MM-dd').format(fromDate);
                 var timeto = DateFormat('yyyy-MM-dd').format(toDate);
 
-                widget.onTapList!([timefrom, timeto]);
+                widget.onTapList([timefrom, timeto]);
                 // log('ff' + timefrom.toString());
                 // log('ff' + timeto.toString());
 

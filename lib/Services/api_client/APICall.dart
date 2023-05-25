@@ -331,6 +331,28 @@ class APICall {
     }
   }
 
+  Future apiPaymentHistory({
+    required String startData,
+    required String lastDate,
+  }) async {
+    try {
+      Map data = {
+        "user_id": _userData.userId,
+        "app_type": "user",
+        "start_date": startData,
+        "end_date": lastDate,
+        "offset": 0,
+        "limit": 10
+      };
+
+      final response = await dio.post(url_paymentHistory, data: data);
+      responseMessage.display(url_paymentHistory, response);
+      return response.data;
+    } catch (e) {
+      errorDisplay.display(e, url_paymentHistory);
+    }
+  }
+
   Future apiGetMarchantList({required String categoryId}) async {
     try {
       Map data = {"user_id": _userData.userId, "category_id": categoryId};
@@ -956,12 +978,14 @@ class APICall {
     }
   }
 
-  Future apiAddBooking(
+  Future<dynamic> apiAddBooking(
       {required String marchantId,
       required DateTime orderDate,
       required String time,
       required String agentID,
       required String totalAmount,
+      required String token,
+      required String amount,
       required String completionTime,
       required List<Map<String, String>> serviceList}) async {
     try {
@@ -977,26 +1001,11 @@ class APICall {
         "services": serviceList,
         "total_amount": totalAmount,
         "completion_time": completionTime,
+        "token": token,
+        "amount": amount,
       };
       log("$data", name: "Booking Data");
-      //{
-
-      // "user_id": "11",
-      // "marchant_id": "12",
-      // "order_date": "2022-10-12",
-      // "order_time": "23:10:00",
-      // "agent_id": "",
-      // "services": [
-      //   {"service_id": "18"},
-      //   {"service_id": "23"}
-      // ]
-      // "user_id": _userData.userId,
-      // "marchant_id": marchantId,
-      // "order_date": _orderDate,
-      // "order_time": time,
-      // "agent_id": agentID,
-      // "services": serviceList
-      // };
+     
 
       log("ffgfgfrr" + data.toString());
       log("ffgfgfrr" + serviceList.toString());
@@ -1006,9 +1015,20 @@ class APICall {
       return response.data;
     } catch (e) {
       errorDisplay.display(e, url_addBooking);
+      return e.toString();
     }
   }
 
+  // Future<HomePackagesDetail> getAdsPackages() async {
+  //   final res = await apiCall.apiGetAdsPackagesList();
+  //   ResponseData responseData = ResponseData.fromJson(res);
+  //   if (responseData.statusCode! &&
+  //       (res['result'] as Map).containsKey('packages')) {
+  //     return packagesDetailsList = HomePackagesDetail.fromJson(res['result']);
+  //   } else {
+  //     return packagesDetailsList;
+  //   }
+  // }
 // Future apibookingdetails({required String marchant_id}) async {
 //   try {
 //     Map data = {

@@ -6,6 +6,8 @@ import 'dart:math' hide log;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_braintree/flutter_braintree.dart';
+// import 'package:flutter_braintree/flutter_braintree.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -58,7 +60,8 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
   String Cardcvv = "";
   String CardHoldername = "";
   bool value = false;
-  bool cardSelected = false;
+  // bool cardSelected = false;
+  int? cardSelected;
   int selectedCard = 0;
   double horizontalDrag = 0;
   Map<String, dynamic>? paymentIntentData;
@@ -455,60 +458,85 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                 ),
-                                child: FutureBuilder<Cardinfo>(
+                                child: FutureBuilder<List<CardinfoResult>>(
                                   future: _addcardProvider.getCardinfo(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       final data = snapshot.data;
-                                      return GestureDetector(
-                                        onHorizontalDragUpdate: (horizontal) {
-                                          setState(() {
-                                            horizontalDrag +=
-                                                horizontal.delta.dx;
-                                            horizontalDrag %= 360;
-                                          });
-                                        },
-                                        onTap: () {
-                                          setState(() {
-                                            cardSelected = !cardSelected;
-                                            Cardnumber = data!.cardNo;
-                                            Cardcvv = data.cvv;
-                                            date = data.expired.split("/");
-                                          });
-                                        },
-                                        child: Transform(
-                                          transform: Matrix4.identity()
-                                            ..setEntry(3, 2, 0.001)
-                                            ..rotateY(
-                                                pi / 180 * horizontalDrag),
-                                          alignment: Alignment.center,
-                                          child: Container(
-                                            width: 300,
-                                            height: 200,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  cardSelected
-                                                      ? Color.fromARGB(
-                                                          255, 77, 147, 179)
-                                                      : Color(0xff323232),
-                                                  cardSelected
-                                                      ? Color.fromARGB(
-                                                          255, 35, 100, 131)
-                                                      : Color(0xff000000)
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
+                                      return ListView.builder(
+                                        itemCount: data!.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: GestureDetector(
+                                              // onHorizontalDragUpdate:
+                                              //     (horizontal) {
+                                              //   setState(() {
+                                              //     horizontalDrag +=
+                                              //         horizontal.delta.dx;
+                                              //     horizontalDrag %= 360;
+                                              //   });
+                                              // },
+                                              onTap: () {
+                                                setState(() {
+                                                  cardSelected = index;
+                                                  Cardnumber =
+                                                      data[index].cardNo ?? '';
+                                                  Cardcvv =
+                                                      data[index].cvv ?? '';
+                                                  date = data[index]
+                                                      .expired!
+                                                      .split("/");
+                                                });
+                                              },
+                                              child: Transform(
+                                                transform: Matrix4.identity()
+                                                  ..setEntry(3, 2, 0.001)
+                                                  ..rotateY(pi /
+                                                      180 *
+                                                      horizontalDrag),
+                                                alignment: Alignment.center,
+                                                child: Container(
+                                                  width: 300,
+                                                  height: 200,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        cardSelected == index
+                                                            ? Color.fromARGB(
+                                                                255,
+                                                                77,
+                                                                147,
+                                                                179)
+                                                            : Color(0xff323232),
+                                                        cardSelected == index
+                                                            ? Color.fromARGB(
+                                                                255,
+                                                                35,
+                                                                100,
+                                                                131)
+                                                            : Color(0xff000000)
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                  ),
+                                                  child: horizontalDrag <= 90 ||
+                                                          horizontalDrag >= 270
+                                                      ? cardFront(
+                                                          data: data[index])
+                                                      : cardBack(),
+                                                ),
                                               ),
                                             ),
-                                            child: horizontalDrag <= 90 ||
-                                                    horizontalDrag >= 270
-                                                ? cardFront(data: data)
-                                                : cardBack(),
-                                          ),
-                                        ),
+                                          );
+                                        },
                                       );
                                       // Padding(
                                       //   padding: const EdgeInsets.symmetric(
@@ -648,14 +676,14 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (cardSelected ||
+                      if ((cardSelected != null) ||
                           cardnumber.text.length == 19 &&
                               cvv.text.length == 3 &&
                               expired.text.length == 5 &&
                               name.text.isNotEmpty)
                         InkWell(
                           onTap: () async {
-                            //  showDialog(
+                            //  showDialog(.
                             //     context: context,
                             //     builder: (context) {
                             //       return ConfirmationScreen(icon: Icon(Icons.ac_unit),name: "Tapped Successfully",title: "Tapped", color: Colors.amberAccent,);
@@ -735,56 +763,109 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
   }
 
   Future<void> makePayment() async {
+    // var request = BraintreeDropInRequest(
+    //     clientToken: 'sandbox_zj6j6z8q_cz3szz79wqhvgn3t',
+    //     collectDeviceData: true,
+    //     amount: '1.00',
+    //     cardEnabled: true,
+    //     tokenizationKey: 'sandbox_zj6j6z8q_cz3szz79wqhvgn3t',
+
+    final request = BraintreeCreditCardRequest(
+      cardNumber: Cardnumber,
+      expirationMonth: date[0].toString(),
+      expirationYear: date[1].toString(),
+      cvv: Cardcvv,
+    );
+    // final result = await Braintree.tokenizeCreditCard(
+    //   'sandbox_zj6j6z8q_cz3szz79wqhvgn3t',
+    //   request,
+    // );
+    BraintreePaymentMethodNonce? resultData;
+
     try {
-      await Stripe.instance.dangerouslyUpdateCardDetails(CardDetails(
-          cvc: Cardcvv,
-          expirationMonth: int.parse(date[0]),
-          expirationYear: int.parse(date[1]),
-          number: Cardnumber));
+      resultData = await Braintree.tokenizeCreditCard(
+          'sandbox_zj6j6z8q_cz3szz79wqhvgn3t', request);
+    } catch (e) {
+      log('--->>>>' + e.toString());
+    }
 
-      final PaymentMethod paymentMethod =
-          await Stripe.instance.createPaymentMethod(
-        params: PaymentMethodParams.card(
-          paymentMethodData: PaymentMethodData.fromJson({
-            'email': 'email@stripe.com',
-            'phone': '+48888000888',
-            'address': Address(
-              city: 'Houston',
-              country: 'US',
-              line1: '1459  Circle Drive',
-              line2: '',
-              state: 'Texas',
-              postalCode: '77063',
-            )
-          }),
-        ),
+    if (resultData?.nonce != null) {
+      var result = BraintreeDropInResult(
+          paymentMethodNonce: resultData!, deviceData: 'deviceData');
 
-        // PaymentMethodParams.card(
-        //   paymentMethodData: PaymentMethodData.fromJson({
-        //     'email': 'email@stripe.com',
-        //     'phone': '+48888000888',
-        //     'address': Address(
-        //       city: 'Houston',
-        //       country: 'US',
-        //       line1: '1459  Circle Drive',
-        //       line2: '',
-        //       state: 'Texas',
-        //       postalCode: '77063',
-        //     )
-        //   }),
-        // ),
-      );
+      print(result);
+      var res = await ref.read(marchantProvider).bookingService(
+          marchantId: widget.marchantId.toString(),
+          orderDate: widget.selectDate!,
+          time: widget.selectTime.toString(),
+          agentID: widget.agentID.toString(),
+          totalAmount: widget.amount.toString(),
+          completionTime: widget.completionTime.toString(),
+          serviceList: widget.SelectService!.toSet(),
+          amount:
+              widget.amount == null ? "00" : widget.amount!.toStringAsFixed(2),
+          token: result.paymentMethodNonce.nonce);
 
-      final paymentIntentResult = await createPaymentIntent(
-          currency: 'USD',
-          paymentMethodId: paymentMethod.id,
-          useStripeSdk: true);
-      final paymentIntent = await Stripe.instance
-          .retrievePaymentIntent(paymentIntentResult['client_secret']);
-      //  .handleCardAction(paymentIntentResult['client_secret']);
+      if (res["status_code"] == true) {
+        Navigator.of(context).pop();
+        showDialog(
+            barrierDismissible: true,
+            context: context,
+            builder: (context) {
+              return ConfirmationScreen(
+                name: 'Your Payment Has Been \nSuccessfully Updated',
+                color: Color(0xff4b6057),
+                icon: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 50,
+                ),
+              );
+            });
+        Timer(Duration(seconds: 2), () {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => BaseHomeWidget()),
+              (route) => false);
+        });
+        log("${widget.selectDate.toString()}", name: "Card Order Date");
+      }
+    }
 
-      await confirmIntent(paymentIntent.id);
-    } catch (e, s) {}
+    // try {
+    //   await Stripe.instance.dangerouslyUpdateCardDetails(CardDetails(
+    //       cvc: Cardcvv,
+    //       expirationMonth: int.parse(date[0]),
+    //       expirationYear: int.parse(date[1]),
+    //       number: Cardnumber));
+
+    //   final PaymentMethod paymentMethod =
+    //       await Stripe.instance.createPaymentMethod(
+    //     params: PaymentMethodParams.card(
+    //       paymentMethodData: PaymentMethodData.fromJson({
+    //         'email': 'email@stripe.com',
+    //         'phone': '+48888000888',
+    //         'address': Address(
+    //           city: 'Houston',
+    //           country: 'US',
+    //           line1: '1459  Circle Drive',
+    //           line2: '',
+    //           state: 'Texas',
+    //           postalCode: '77063',
+    //         )
+    //       }),
+    //     ),
+    //   );
+
+    //   final paymentIntentResult = await createPaymentIntent(
+    //       currency: 'USD',
+    //       paymentMethodId: paymentMethod.id,
+    //       useStripeSdk: true);
+    //   final paymentIntent = await Stripe.instance
+    //       .retrievePaymentIntent(paymentIntentResult['client_secret']);
+    //   //  .handleCardAction(paymentIntentResult['client_secret']);
+
+    //   await confirmIntent(paymentIntent.id);
+    // } catch (e, s) {}
   }
 
   Future<Map<String, dynamic>> createPaymentIntent({
@@ -834,15 +915,15 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
             (route) => false);
       });
       log("${widget.selectDate.toString()}", name: "Card Order Date");
-      ref.read(marchantProvider).bookingService(
-            marchantId: widget.marchantId.toString(),
-            orderDate: widget.selectDate!,
-            time: widget.selectTime.toString(),
-            agentID: widget.agentID.toString(),
-            totalAmount: widget.amount.toString(),
-            completionTime: widget.completionTime.toString(),
-            serviceList: widget.SelectService!.toSet(),
-          );
+      // ref.read(marchantProvider).bookingService(
+      //       marchantId: widget.marchantId.toString(),
+      //       orderDate: widget.selectDate!,
+      //       time: widget.selectTime.toString(),
+      //       agentID: widget.agentID.toString(),
+      //       totalAmount: widget.amount.toString(),
+      //       completionTime: widget.completionTime.toString(),
+      //       serviceList: widget.SelectService!.toSet(),
+      //     );
     }
 
     print('Create Intent reponse ===> ${response.data}');
@@ -879,7 +960,7 @@ class _CardDetailsState extends ConsumerState<CardDetail> {
     return a.toString();
   }
 
-  Widget cardFront({required Cardinfo? data}) {
+  Widget cardFront({required CardinfoResult? data}) {
     return Container(
       padding: const EdgeInsets.all(18),
       child: Column(

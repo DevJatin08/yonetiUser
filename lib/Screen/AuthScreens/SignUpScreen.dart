@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
@@ -21,6 +22,7 @@ import 'package:userapp/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart' as ge;
+import 'package:the_apple_sign_in/the_apple_sign_in.dart' as appleSingnIn;
 
 class SignUpScreen extends ConsumerStatefulWidget {
   SignUpScreen({Key? key}) : super(key: key);
@@ -187,6 +189,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   });
                 }, FontAwesomeIcons.google),
                 SizedBox(
+                  height: size.height * 0.02,
+                ),
+                if (Platform.isIOS)
+                  customBtn('Apple', () async {
+                    await handleAppleSignIn(
+                        context, fcmToken.toString(), userProvider);
+                  }, FontAwesomeIcons.apple),
+                SizedBox(
                   height: size.height * 0.05,
                 ),
               ],
@@ -216,7 +226,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget customBtn(
-      String serviceProvider, VoidCallback callback, IconData iconData) {
+    String serviceProvider,
+    VoidCallback callback,
+    IconData iconData,
+  ) {
     final size = MediaQuery.of(context).size;
 
     return InkWell(
@@ -225,7 +238,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         width: size.width * buttonWidth,
         height: size.width * 0.13,
         decoration: BoxDecoration(
-            color: primaryColor,
+            color: serviceProvider == 'Apple' ? Colors.black : primaryColor,
             borderRadius: BorderRadius.circular(button_radius)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -308,6 +321,80 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         snackbar('Facebook login is in progress!', context);
 
         break;
+    }
+  }
+
+  Future<void> handleAppleSignIn(context, deviceToken, useProvider) async {
+    try {
+      if (await appleSingnIn.TheAppleSignIn.isAvailable()) {
+        final appleSingnIn.AuthorizationResult result =
+            await appleSingnIn.TheAppleSignIn.performRequests([
+          const appleSingnIn.AppleIdRequest(requestedScopes: [
+            appleSingnIn.Scope.email,
+            appleSingnIn.Scope.fullName
+          ])
+        ]);
+        switch (result.status) {
+          case appleSingnIn.AuthorizationStatus.authorized:
+            print(result.credential!.email);
+            final data = {
+              "first_name": result.credential!.fullName!.givenName.toString(),
+              "email": result.credential!.email.toString(),
+              "account_type": "Private Account",
+              "provider_id": result.credential!.authorizationCode.toString(),
+              "provider_type": "apple",
+              "device_token": deviceToken
+            };
+
+            poploading(context);
+            ResponseData responseData = await useProvider.callSocialLogin(
+                result.credential!.email.toString(),
+                result.credential!.authorizationCode.toString(),
+                'Apple',
+                fcmToken.toString(),
+                '');
+            if (responseData.statusCode!) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => BaseHomeWidget()));
+            } else {
+              snackbar(responseData.message!, context);
+            }
+            // log(data.toString());
+            // final response =
+            //     await _networkRepository.socialLogin(data, context);
+            // if (response['code'] == 200 && response != null) {
+            //   dataStorage.write('isLogin', true);
+            //   dataStorage.write('id', response['data']['socialLoggedIn']['id']);
+            //   dataStorage.write(
+            //       'name', response['data']['socialLoggedIn']['name']);
+            //   dataStorage.write('device_token',
+            //       response['data']['socialLoggedIn']['device_token']);
+            //   dataStorage.write('user_token',
+            //       response['data']['socialLoggedIn']['user_token']);
+            //   dataStorage.write(
+            //       'email', response['data']['socialLoggedIn']['email']);
+
+            //   Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const HomePage(title: "title"),
+            //       ));
+            // } else {
+            //   log(response['error']['message'].toString());
+            //   CommonMethod().showSnackBar(
+            //       context, response['error']['message'].toString());
+            // }
+            break;
+          case appleSingnIn.AuthorizationStatus.cancelled:
+            print('User cancelled');
+            break;
+          case appleSingnIn.AuthorizationStatus.error:
+            print("Sign in failed: ${result.error!.localizedDescription}");
+            break;
+        }
+      }
+    } catch (e) {
+      print("++++ Apple login error: $e");
     }
   }
 }

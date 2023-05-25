@@ -17,7 +17,9 @@ class _MyReviewsState extends ConsumerState<MyReviews> {
     final _marchantProvider = ref.watch(marchantProvider);
 
     return FutureBuilder<ReviewData>(
-        future: _marchantProvider.GetAllReviwe(),
+        future: _marchantProvider.GetAllReviwe(
+            
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final data = snapshot.data;
