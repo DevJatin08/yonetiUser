@@ -36,7 +36,9 @@ class BrandDetail extends ConsumerStatefulWidget {
 
 class _BrandDetailState extends ConsumerState<BrandDetail> {
   double hor_Size = 8.0;
-  String defaultavtar = "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1";
+  List<Order> data = <Order>[];
+  String defaultavtar =
+      "https://i0.wp.com/researchictafrica.net/wp/wp-content/uploads/2016/10/default-profile-pic.jpg?ssl=1";
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +48,15 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
       body: FutureBuilder<MarchantDetail>(
           future: _marchantProvider.marchantDetail(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              final data = snapshot.data!;
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              final rsdata = snapshot.data!;
+              for (var i = 0; i < snapshot.data!.orders!.length; i++) {
+                if (snapshot.data!.orders![i].orderStatus != 'complete') {
+                  data.add(snapshot.data!.orders![i]);
+                }
+              }
+
               return SafeArea(
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -59,7 +68,9 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: NetworkImage(
-                                data.avatar!.isEmpty ? defaultavtar : data.avatar.toString(),
+                                rsdata.avatar!.isEmpty
+                                    ? defaultavtar
+                                    : rsdata.avatar.toString(),
                               ),
                               fit: BoxFit.fill)),
                     ),
@@ -74,7 +85,8 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                             Padding(
                               padding: EdgeInsets.all(hor_Size),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -90,12 +102,19 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                     ),
                                   ),
                                   Container(
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(cardRadius), color: primaryColor),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(cardRadius),
+                                        color: primaryColor),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
                                       child: Text(
                                         _marchantProvider.rating,
-                                        style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontFamily: 'bold'),
                                       ),
                                     ),
                                   ),
@@ -187,7 +206,9 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                       color: Colors.grey.withOpacity(0.1),
                                       image: new DecorationImage(
                                         fit: BoxFit.cover,
-                                        colorFilter: new ColorFilter.mode(Colors.grey.withOpacity(0.4), BlendMode.dstATop),
+                                        colorFilter: new ColorFilter.mode(
+                                            Colors.grey.withOpacity(0.4),
+                                            BlendMode.dstATop),
                                         image: new AssetImage(
                                           'assets/demo/map.png',
                                         ),
@@ -195,16 +216,22 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: hor_Size),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: hor_Size),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           snapshot.data!.address!,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: cardSubTextColor,
+                                              fontFamily: 'bold'),
                                         ),
                                         SizedBox(
                                           height: 3,
@@ -213,7 +240,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           snapshot.data!.businessDetails!,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: cardSubTextColor,
+                                              fontFamily: 'bold'),
                                         ),
                                         SizedBox(
                                           height: 3,
@@ -222,7 +252,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           '${snapshot.data!.businessStartTime}AM to ${snapshot.data!.businessCloseTime}PM',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: cardSubTextColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ],
                                     ),
@@ -240,6 +273,12 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => ReservationScreen(
+                                      startTime:
+                                          ((snapshot.data!.businessStartTime ??
+                                              '7')),
+                                      endTime:
+                                          ((snapshot.data!.businessCloseTime) ??
+                                              '5'),
                                       name: snapshot.data!.name,
                                       ratting: _marchantProvider.rating,
                                     ),
@@ -255,7 +294,8 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                             CustomButton(
                               text: 'Contact Merchant',
                               voidCallback: () {
-                                ref.read(chatServiceProvider).setCustomerId(_marchantProvider.marchantId);
+                                ref.read(chatServiceProvider).setCustomerId(
+                                    _marchantProvider.marchantId);
 
                                 Navigator.push(
                                   context,
@@ -274,7 +314,8 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                               height: 20,
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: hor_Size),
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: hor_Size),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -288,13 +329,17 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                   ),
                                   SizedBox(height: 10),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Website',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: cardSubTextColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       Expanded(
                                         child: Text(
@@ -302,7 +347,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           textAlign: TextAlign.end,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -311,13 +359,17 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                     height: 10,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Call',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: cardSubTextColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       Expanded(
                                         child: Text(
@@ -325,7 +377,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           textAlign: TextAlign.end,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -334,13 +389,17 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                     height: 10,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Business Type',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: cardSubTextColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       Expanded(
                                         child: Text(
@@ -348,7 +407,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           textAlign: TextAlign.end,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -357,13 +419,17 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                     height: 10,
                                   ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Average Cost',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: cardSubTextColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       Expanded(
                                         child: Text(
@@ -371,7 +437,10 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           textAlign: TextAlign.end,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: cardSubTextColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: cardSubTextColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -385,31 +454,42 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                               height: 50,
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: hor_Size),
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: hor_Size),
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Bookings',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 15, color: thirdColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: thirdColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       InkWell(
                                         onTap: () {
                                           showDialog(
                                               context: context,
                                               builder: (context) {
-                                                return Align(alignment: Alignment.bottomCenter, child: Bookings());
+                                                return Align(
+                                                    alignment:
+                                                        Alignment.bottomCenter,
+                                                    child: Bookings());
                                               });
                                         },
                                         child: Text(
-                                          'See all(${snapshot.data!.orders!.length})',
+                                          'See all(${data.length})',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -417,7 +497,7 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  data.orders!.isEmpty
+                                  data.isEmpty
                                       ? Column(
                                           children: [
                                             SizedBox(
@@ -432,15 +512,21 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           ],
                                         )
                                       : SizedBox(
-                                          height: (snapshot.data!.orders!.length > 3 ? 2 : snapshot.data!.orders!.length) * 80,
+                                          height: (data.length > 3
+                                                  ? 2
+                                                  : data.length) *
+                                              80,
                                           child: ListView.builder(
-                                              itemCount: snapshot.data!.orders!.length,
+                                              itemCount: data.length,
                                               // physics:
                                               //     NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, listIndex) {
+                                              itemBuilder:
+                                                  (context, listIndex) {
                                                 return Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SwipeCard(order: snapshot.data!.orders![listIndex]),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SwipeCard(
+                                                      order: data[listIndex]),
                                                 );
                                               }),
                                         ),
@@ -456,17 +542,22 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                               height: 50,
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: hor_Size),
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: hor_Size),
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Nearby',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 15, color: thirdColor, fontFamily: 'bold'),
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: thirdColor,
+                                            fontFamily: 'bold'),
                                       ),
                                       InkWell(
                                         onTap: () {
@@ -474,14 +565,17 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (_) => NearbyPage(
-                                                        nearby: data.nearby,
+                                                        nearby: rsdata.nearby,
                                                       )));
                                         },
                                         child: Text(
                                           'See all(${snapshot.data!.nearby!.length})',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 16, color: primaryColor, fontFamily: 'bold'),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: primaryColor,
+                                              fontFamily: 'bold'),
                                         ),
                                       ),
                                     ],
@@ -489,7 +583,7 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  data.nearby!.isEmpty
+                                  rsdata.nearby!.isEmpty
                                       ? Column(
                                           children: [
                                             SizedBox(
@@ -504,15 +598,21 @@ class _BrandDetailState extends ConsumerState<BrandDetail> {
                                           ],
                                         )
                                       : SizedBox(
-                                          height: (snapshot.data!.nearby!.length > 3 ? 2 : 180),
+                                          height:
+                                              (snapshot.data!.nearby!.length > 3
+                                                  ? 2
+                                                  : 180),
                                           child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
-                                              itemCount: snapshot.data!.nearby!.length,
+                                              itemCount:
+                                                  snapshot.data!.nearby!.length,
                                               // physics:
                                               //     NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, listIndex) {
+                                              itemBuilder:
+                                                  (context, listIndex) {
                                                 return NearbyCard(
-                                                  marchantDetail: data.nearby![listIndex],
+                                                  marchantDetail:
+                                                      rsdata.nearby![listIndex],
                                                   // featured: index < 3 ? true : false,
                                                   leftPadding: standardPadding,
                                                   rightPadding: standardPadding,
@@ -585,7 +685,8 @@ class _ButtonsClickState extends ConsumerState<ButtonsClick> {
               Share.share('check out my website https://example.com');
             }),
             rowIcons(FontAwesomeIcons.star, 'Review', () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => ReviewPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => ReviewPage()));
             }),
             rowIcons(Icons.camera_alt, 'Photo', () {
               Navigator.push(
@@ -603,16 +704,21 @@ class _ButtonsClickState extends ConsumerState<ButtonsClick> {
                 log("${snapshot.data}", name: "Bookmark Data");
                 if (snapshot.data?['status_code'] == true) {
                   final data = BookmarkData.fromJson(snapshot.data?['result']);
-                  if (data.MarchantDetails1.any((element) => element.id == widget.snapshot.id) == true) {
+                  if (data.MarchantDetails1.any(
+                          (element) => element.id == widget.snapshot.id) ==
+                      true) {
                     log("True", name: "Already Bookmarked");
                     bookmark = true;
-                    bookmarkId = _bookmarkServiceInfoProvider.BookMarkData.MarchantDetails1
+                    bookmarkId = _bookmarkServiceInfoProvider
+                        .BookMarkData.MarchantDetails1
                         .where((element) => element.id == widget.snapshot.id)
                         .first
                         .bookmarkId;
                   }
                   return rowIcons(
-                    bookmark == true ? FontAwesomeIcons.solidBookmark : FontAwesomeIcons.bookmark,
+                    bookmark == true
+                        ? FontAwesomeIcons.solidBookmark
+                        : FontAwesomeIcons.bookmark,
                     'Bookmark',
                     () {
                       log("$bookmark", name: "Bookmark Value");
@@ -638,7 +744,9 @@ class _ButtonsClickState extends ConsumerState<ButtonsClick> {
                   );
                 }
                 return rowIcons(
-                  bookmark == true ? FontAwesomeIcons.solidBookmark : FontAwesomeIcons.bookmark,
+                  bookmark == true
+                      ? FontAwesomeIcons.solidBookmark
+                      : FontAwesomeIcons.bookmark,
                   'Bookmark',
                   () {
                     log("$bookmark", name: "Bookmark Value");
@@ -681,7 +789,8 @@ class _ButtonsClickState extends ConsumerState<ButtonsClick> {
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 12, color: thirdColor, fontFamily: 'bold'),
+            style:
+                TextStyle(fontSize: 12, color: thirdColor, fontFamily: 'bold'),
           ),
         ],
       ),
@@ -705,8 +814,10 @@ class _BookingsState extends ConsumerState<Bookings> {
       height: size.height * 0.7,
       width: size.width,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      decoration:
-          BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30), topRight: Radius.circular(30))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -726,16 +837,22 @@ class _BookingsState extends ConsumerState<Bookings> {
                         ? Center(
                             child: Text(
                               "No Bookings",
-                              style: TextStyle(color: Colors.black, fontSize: 18),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
                             ),
                           )
                         : ListView.builder(
                             itemCount: snap.data!.orders!.length,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 6),
-                                child: SwipeCard(order: snap.data!.orders![index]),
-                              );
+                              return snap.data!.orders![index].orderStatus !=
+                                      'complete'
+                                  ? Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 6),
+                                      child: SwipeCard(
+                                          order: snap.data!.orders![index]),
+                                    )
+                                  : SizedBox();
                             }),
                   );
                 }

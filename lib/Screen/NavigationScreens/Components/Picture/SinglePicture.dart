@@ -22,7 +22,8 @@ class SinglePicture extends ConsumerStatefulWidget {
   String? user_profile;
   String? merchant_id;
 
-  SinglePicture({this.image, this.user_profile, this.id, this.name, this.merchant_id});
+  SinglePicture(
+      {this.image, this.user_profile, this.id, this.name, this.merchant_id});
 
   @override
   _SinglePictureState createState() => _SinglePictureState();
@@ -31,6 +32,7 @@ class SinglePicture extends ConsumerStatefulWidget {
 class _SinglePictureState extends ConsumerState<SinglePicture> {
   List like = [];
   String imagenotfound = "https://www.alldaydr.com/app/images/no_image.png";
+  String isLiked = '0';
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
     final _getcommentProvider = ref.watch(getcommentProvider);
     final _getlikeProvider = ref.watch(getlikedataProvider);
     final _marchantProvider = ref.watch(marchantProvider);
+    final userInfo = ref.watch(userInfoProvider);
     final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -99,7 +102,8 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
               ),
               subtitle: Text(
                 "1 days ago",
-                style: TextStyle(fontSize: 12, color: Color(0xff9d9d9d), fontFamily: 'bold'),
+                style: TextStyle(
+                    fontSize: 12, color: Color(0xff9d9d9d), fontFamily: 'bold'),
               ),
             ),
             Container(
@@ -122,32 +126,87 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                 children: [
                   Row(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            // like.contains(_userInfoProvider.userData.userId)
-                            //     ? like.remove(_userInfoProvider.userData.userId)
-                            //     : like.add(_userInfoProvider.userData.userId);
-                            // print(like);
-                            _marchantProvider.addLike(
-                              image_id: widget.id.toString(),
-                              merchantId: widget.merchant_id,
-                              imageUrl: widget.image,
-                            );
-                          });
-                          // customPopUp(
-                          //     context,
-                          //     PostLikes(
-                          //       ImagId: widget.id,
-                          //     ));
-                        },
-                        child: Image.asset(
-                          'assets/images/heart.png',
-                          color: Colors.blue,
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
+                      FutureBuilder<GetLikeData>(
+                          future: _getlikeProvider.getLikeData(
+                              ImageID: widget.id.toString()),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final data = snapshot.data;
+
+                              isLiked = (data != null &&
+                                      data.flag != null &&
+                                      data.flag != 'null')
+                                  ? data.flag
+                                  : '0';
+                              return isLiked == '1'
+                                  ? InkWell(
+                                      onTap: () {
+                                        _marchantProvider.addLike(
+                                          image_id: widget.id.toString(),
+                                          merchantId: widget.merchant_id,
+                                          imageUrl: widget.image,
+                                        );
+
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.favorite,
+                                        color: Colors.blue,
+                                        size: 24,
+                                      ),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        _marchantProvider.addLike(
+                                          image_id: widget.id.toString(),
+                                          merchantId: widget.merchant_id,
+                                          imageUrl: widget.image,
+                                        );
+                                        setState(() {});
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/heart.png',
+                                        color: Colors.blue,
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                    );
+                            } else {
+                              return InkWell(
+                                onTap: () {
+                                  _marchantProvider.addLike(
+                                    image_id: widget.id.toString(),
+                                    merchantId: widget.merchant_id,
+                                    imageUrl: widget.image,
+                                  );
+                                  setState(() {});
+                                },
+                                child: Image.asset(
+                                  'assets/images/heart.png',
+                                  color: Colors.blue,
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              );
+                            }
+                          }),
+                      // InkWell(
+                      //   onTap: () {
+                      //     setState(() {
+                      //       _marchantProvider.addLike(
+                      //         image_id: widget.id.toString(),
+                      //         merchantId: widget.merchant_id,
+                      //         imageUrl: widget.image,
+                      //       );
+                      //     });
+                      //   },
+                      //   child: Image.asset(
+                      //     'assets/images/heart.png',
+                      //     color: Colors.blue,
+                      //     width: 24,
+                      //     height: 24,
+                      //   ),
+                      // ),
                       // FutureBuilder<LikeData>(
                       //     future: _marchantProvider.addLike(
                       //         image_id: widget.id.toString()),
@@ -212,7 +271,8 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                   Row(
                     children: [
                       FutureBuilder<GetLikeData>(
-                          future: _getlikeProvider.getLikeData(ImageID: widget.id.toString()),
+                          future: _getlikeProvider.getLikeData(
+                              ImageID: widget.id.toString()),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               final data = snapshot.data;
@@ -234,7 +294,10 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                                   child: Center(
                                       child: Text(
                                     "${data!.likeUsers.length} likes",
-                                    style: TextStyle(color: Color(0xff9d9d9d), fontSize: 16, fontFamily: 'bold'),
+                                    style: TextStyle(
+                                        color: Color(0xff9d9d9d),
+                                        fontSize: 16,
+                                        fontFamily: 'bold'),
                                   )),
                                 ),
                               );
@@ -248,7 +311,10 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                               child: Center(
                                   child: Text(
                                 "0 likes",
-                                style: TextStyle(color: Color(0xff9d9d9d), fontSize: 16, fontFamily: 'bold'),
+                                style: TextStyle(
+                                    color: Color(0xff9d9d9d),
+                                    fontSize: 16,
+                                    fontFamily: 'bold'),
                               )),
                             );
                           }),
@@ -256,7 +322,8 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                         width: 20,
                       ),
                       FutureBuilder<GetCommentData>(
-                          future: _getcommentProvider.getCommentData(ImageID: widget.id.toString()),
+                          future: _getcommentProvider.getCommentData(
+                              ImageID: widget.id.toString()),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               final data = snapshot.data;
@@ -265,7 +332,13 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                                   // showDialog(context: context, builder: (context){
                                   //   return  PostComment();
                                   // });
-                                  customPopUp(context, PostComment(ImageID: widget.id));
+                                  customPopUp(
+                                      context,
+                                      PostComment(
+                                          merchantId:
+                                              _marchantProvider.marchantId,
+                                          imageUrl: widget.image,
+                                          ImageID: widget.id));
                                 },
                                 child: Container(
                                   height: 40,
@@ -276,7 +349,10 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                                   child: Center(
                                       child: Text(
                                     "${data!.comments.length} Comments",
-                                    style: TextStyle(color: Color(0xff9d9d9d), fontSize: 16, fontFamily: 'bold'),
+                                    style: TextStyle(
+                                        color: Color(0xff9d9d9d),
+                                        fontSize: 16,
+                                        fontFamily: 'bold'),
                                   )),
                                 ),
                               );
@@ -290,7 +366,10 @@ class _SinglePictureState extends ConsumerState<SinglePicture> {
                               child: Center(
                                   child: Text(
                                 "0 Comments",
-                                style: TextStyle(color: Color(0xff9d9d9d), fontSize: 16, fontFamily: 'bold'),
+                                style: TextStyle(
+                                    color: Color(0xff9d9d9d),
+                                    fontSize: 16,
+                                    fontFamily: 'bold'),
                               )),
                             );
                           }),

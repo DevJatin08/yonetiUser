@@ -128,7 +128,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       if (_formKey.currentState!.validate()) {
                         print(passwordController.text);
                         poploading(context);
-
                         ResponseData responseData =
                             await userProvider.callLogin(emailController.text,
                                 passwordController.text, fcmToken.toString());

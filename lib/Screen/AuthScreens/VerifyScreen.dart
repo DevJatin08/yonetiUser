@@ -48,7 +48,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
             ),
             Center(
               child: Text(
-                "Verify your Mobile",
+                "Verify your Email",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
@@ -202,10 +202,10 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                   final res = await userProvider.verifyOTP(otp);
                   Navigator.pop(context);
                   if (res.statusCode!) {
+                      spHepler.setPrefbool('IsVerified', true);
                     Navigator.pop(context);
                     notifications.sendNotification(
                         deviceId: fcmToken.toString());
-                    log(deviceId);
                     Navigator.push(context,
                         MaterialPageRoute(builder: (_) => BaseHomeWidget()));
                   } else {
@@ -213,12 +213,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
                   }
                 }
 
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => BaseHomeWidget()));
-                // TODO: after testing remove this
-
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (_) => BaseHomeWidget()));
+          
               },
               child: Container(
                   width: size.width * 0.95,

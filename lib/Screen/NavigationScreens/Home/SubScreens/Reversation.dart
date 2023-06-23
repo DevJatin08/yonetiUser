@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:userapp/Constant/ConstantValues.dart';
@@ -22,8 +23,16 @@ import 'package:userapp/Screen/NavigationScreens/Profile/SubScreens/PaymentHisto
 class ReservationScreen extends ConsumerStatefulWidget {
   String? name;
   String? ratting;
+  String? startTime;
+  String? endTime;
 
-  ReservationScreen({Key? key, this.name, this.ratting}) : super(key: key);
+  ReservationScreen({
+    Key? key,
+    this.name,
+    this.ratting,
+    this.startTime,
+    this.endTime,
+  }) : super(key: key);
 
   @override
   _ReservationScreenState createState() => _ReservationScreenState();
@@ -38,6 +47,7 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
   List<int> typeNeg = [18, 19, 20];
   List<double> rating = [4.8, 4.9, 4.0];
   Map<String, dynamic>? paymentIntentData;
+  List<TimeModel> timeSlotList = [];
 
   // List timeList = ["10.30 am", "11.00 am", "11.30 am", '12.00 pm'];
 
@@ -95,6 +105,7 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
     final t = time.add(Duration(minutes: 30));
     selectTime = "${t.hour}:${t.minute}";
     refLodingData();
+    timeSet();
   }
 
   bool isloding = true;
@@ -107,10 +118,16 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
 
   bool book = false;
 
+  // DateTime nearestQuarter(DateTime val) {
+  //   return DateTime(val.year, val.month, val.day, val.hour,
+  //       [15, 30, 45, 60][(val.minute / 15).floor()]);
+  // }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final _marchantProvider = ref.watch(marchantProvider);
+
     return isloding == true
         ? Scaffold(
             body: Center(
@@ -299,6 +316,7 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
                                                                                           name: widget.name,
                                                                                           image: data.images[index].name,
                                                                                           id: data.images[index].id,
+                                                                                         
                                                                                         )));
                                                                           },
                                                                           child:
@@ -704,6 +722,8 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
                                                           selectTime = d;
                                                         });
                                                       },
+                                                      timeSlotList:
+                                                          timeSlotList,
                                                     ),
                                                     SizedBox(
                                                       height: 20,
@@ -1974,16 +1994,64 @@ class _ReservationScreenState extends ConsumerState<ReservationScreen>
       ),
     );
   }
+
+  timeSet() {
+    timeSlotList.clear();
+    // for (DateTime time = startTime;
+    //     time.isBefore(endTime);
+    //     time = time.add(Duration(minutes: 30))) {
+    final now = DateTime.now();
+    var day = DateFormat('EEEE', 'en_US').format(now);
+    var date = DateFormat('dd-MM-yyyy').format(now);
+    var workingstart =
+        DateFormat("dd-MM-yyyy HH:mm").parse(date + " " + widget.startTime!);
+    var workingend = DateFormat("dd-MM-yyyy HH:mm").parse(date +
+        " " +
+        (int.parse(widget.endTime!.toString().split(":")[0].toString()) + 12)
+            .toString() +
+        ':00');
+    var workingselected = DateFormat("dd-MM-yyyy HH:mm")
+        .parse(date + " " + DateFormat.Hm().format(time));
+    DateTime currenttime = DateTime.now();
+
+    for (DateTime time = DateFormat("dd-MM-yyyy HH:mm")
+            .parse(date + " " + widget.startTime!);
+        time.isBefore(DateFormat("dd-MM-yyyy HH:mm").parse(date +
+            " " +
+            (int.parse(widget.endTime!.toString().split(":")[0].toString()) +
+                    12)
+                .toString() +
+            ':00'));
+        time = nearestQuarter(time)
+        // time.add(Duration(minutes: 15))
+        ) {
+      // log(time.toString());
+      String hrTime = time.hour.toString() + ":" + time.minute.toString();
+      timeSlotList
+          .add(TimeModel(time: hrTime, discountPer: '', discountType: ''));
+    }
+  }
+}
+
+DateTime nearestQuarter(DateTime val) {
+  return DateTime(val.year, val.month, val.day, val.hour,
+      [15, 30, 45, 60][(val.minute / 15).floor()]);
+}
+
+bool isCurrentDateInRange(
+    DateTime startDate, DateTime endDate, DateTime selected) {
+  return selected.isAtSameMomentAs(startDate) ||
+      selected.isAtSameMomentAs(endDate) ||
+      selected.isAfter(startDate) && selected.isBefore(endDate);
 }
 
 class CalendarWidget extends StatefulWidget {
   ValueChanged<DateTime> date;
   ValueChanged<String> time;
+  List<TimeModel> timeSlotList;
 
-  CalendarWidget({
-    required this.date,
-    required this.time,
-  });
+  CalendarWidget(
+      {required this.date, required this.time, required this.timeSlotList});
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
@@ -2074,17 +2142,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Center(
               child: ListView.builder(
-                  itemCount: 4,
+                  itemCount: widget.timeSlotList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    DateTime time = getTime(DateTime.now());
+                    // DateTime time = getTime(DateTime.now());
 
-                    final t = time.add(Duration(minutes: index * 30));
+                    // final t = time.add(Duration(minutes: index * 30));
                     return InkWell(
                       onTap: () {
                         setState(() {
                           selectedTimeIndex = index;
-                          widget.time("${t.hour}:${t.minute}");
+                          widget.timeSlotList[index].time;
                         });
                       },
                       child: Container(
@@ -2096,7 +2164,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                 : Colors.transparent),
                         child: Center(
                             child: Text(
-                          "${t.hour}:${t.minute}",
+                          "${widget.timeSlotList[index].time}",
                           style: TextStyle(
                               color: index == selectedTimeIndex
                                   ? Colors.white
@@ -2123,4 +2191,15 @@ DateTime getTime(DateTime t) {
   }
   result = DateTime(t.year, t.month, t.day, t.hour, 60);
   return result;
+}
+
+class TimeModel {
+  String? time;
+  String? discountPer;
+  String? discountType;
+
+  TimeModel(
+      {required this.time,
+      required this.discountPer,
+      required this.discountType});
 }

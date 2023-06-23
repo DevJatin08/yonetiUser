@@ -31,10 +31,45 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    Future.delayed(Duration(seconds: 0), () {
+      getData(ref);
+    });
+
+    super.initState();
+  }
+
+  getData(WidgetRef ref) async {
+    final _userInfoProvider = await ref.read(userInfoProvider).userData;
+      // final userProvider = ref.watch(userInfoProvider);
+
+    //  .then((value) {
+    //   setState(() {
+    //     print('called loaingData');
+    //     _isLoading = false;
+    //     //print(_usersDisplay.length);
+    //   });
+    // });
+    if (_userInfoProvider.fullname != null)
+      businessName.text = _userInfoProvider.fullname!;
+    if (_userInfoProvider.fullname != null)
+      yourname.text = _userInfoProvider.fullname!;
+    if (_userInfoProvider.userBio != null)
+      bio.text = _userInfoProvider.userBio!;
+    if (_userInfoProvider.dob != null)
+      dateBirth.text = _userInfoProvider.dob!;
+    if (_userInfoProvider.email != null)
+      email.text = _userInfoProvider.email!;
+    if (_userInfoProvider.phoneNum != null)
+      phone.text = _userInfoProvider.phoneNum!;
+
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final _userInfoProvider = ref.watch(userInfoProvider);
-
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: Colors.grey.shade800,
@@ -49,7 +84,8 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
               children: [
                 Text(
                   'Account Settings',
-                  style: TextStyle(fontSize: 21, fontFamily: 'bold', color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 21, fontFamily: 'bold', color: Colors.white),
                 ),
                 Text(
                   'Update your account settings',
@@ -120,14 +156,18 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                   controller: bio,
                   maxLine: 3,
                   wordLimit: 150,
-                  hint: 'Living in today’s metropolitan world of cellular phones, mobile computers and other high-tech gadgets is not just.',
+                  hint:
+                      'Living in today’s metropolitan world of cellular phones, mobile computers and other high-tech gadgets is not just.',
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Text(
                   'Max 150 words tell people about yourself',
-                  style: TextStyle(fontSize: 9, fontFamily: 'bold', color: profileSubTextColor),
+                  style: TextStyle(
+                      fontSize: 9,
+                      fontFamily: 'bold',
+                      color: profileSubTextColor),
                 ),
                 SizedBox(
                   height: 10,
@@ -160,7 +200,8 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                       setState(
                         () {
                           dob = d;
-                          dateBirth.text = DateFormat("dd-MMM-yyyy").format(dob).toString();
+                          dateBirth.text =
+                              DateFormat("dd-MMM-yyyy").format(dob).toString();
                         },
                       );
                     }
@@ -209,7 +250,10 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                 ),
                 Text(
                   'Select Gender',
-                  style: TextStyle(fontSize: 9, fontFamily: 'bold', color: profileSubTextColor),
+                  style: TextStyle(
+                      fontSize: 9,
+                      fontFamily: 'bold',
+                      color: profileSubTextColor),
                 ),
                 SizedBox(
                   height: 10,
@@ -219,7 +263,9 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                 ),
                 Container(
                   height: 50,
-                  decoration: BoxDecoration(color: Color(0xfff1f7f7), borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(
+                      color: Color(0xfff1f7f7),
+                      borderRadius: BorderRadius.circular(5)),
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: popString.length,
@@ -235,7 +281,9 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                             width: size.width * 0.9 / popString.length,
                             decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: selectedTap == index ? Color(0xff4fc3f7) : Colors.transparent,
+                                  color: selectedTap == index
+                                      ? Color(0xff4fc3f7)
+                                      : Colors.transparent,
                                 ),
                                 borderRadius: BorderRadius.circular(5)),
                             child: Center(
@@ -246,7 +294,9 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: selectedTap == index ? primaryColor : Colors.grey,
+                                  color: selectedTap == index
+                                      ? primaryColor
+                                      : Colors.grey,
                                 ),
                               ),
                             )),
@@ -262,7 +312,11 @@ class _AccountAndSettingsState extends ConsumerState<AccountAndSettings> {
                     setState(() {
                       print(yourname.text);
                       if (_formkey.currentState!.validate()) {
-                        _userInfoProvider.getAccountSetting(fullname: yourname.text, user_bio: bio.text, dob: dateBirth.text, gender: gender);
+                        _userInfoProvider.getAccountSetting(
+                            fullname: yourname.text,
+                            user_bio: bio.text,
+                            dob: dateBirth.text,
+                            gender: gender);
                         _userInfoProvider.updateUserInfo(
                           yourname.text,
                           bio.text,

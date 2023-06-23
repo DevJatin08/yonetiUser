@@ -12,7 +12,7 @@ class UserService extends ChangeNotifier {
   APICall apiCall = APICall();
   bool isLogin = false;
   ResponseData defaultErrorResponse =
-      ResponseData(message: 'object', statusCode: false);
+      ResponseData(message: 'Error', statusCode: false);
 
   UserService() {
     intialize();

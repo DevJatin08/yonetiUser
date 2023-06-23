@@ -7,10 +7,19 @@ class SPHepler {
     sharedPreferences.setString(name, data);
   }
 
+   setPrefbool(String name, bool data) {
+    sharedPreferences.setBool(name, data);
+  }
+
   String? getPref(
     String name,
   ) {
     return sharedPreferences.getString(name);
+  }
+  bool? getPrefbool(
+    String name,
+  ) {
+    return sharedPreferences.getBool(name);
   }
 
   removePref(String name) {

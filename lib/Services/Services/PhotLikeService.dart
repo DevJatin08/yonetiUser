@@ -4,7 +4,7 @@ import 'package:userapp/Model/Like/likeDetail.dart';
 import 'package:userapp/Model/Response/ResponseModel.dart';
 
 class GetLikeDataService extends ChangeNotifier {
-  GetLikeData GetLikeDataEmpty = GetLikeData(likeUsers: []);
+  GetLikeData GetLikeDataEmpty = GetLikeData(likeUsers: [], flag: '');
 
   Future<GetLikeData> getLikeData({required String ImageID}) async {
     final res = await apiCall.apiGetPhotoLikeDetails(ImageID: ImageID);

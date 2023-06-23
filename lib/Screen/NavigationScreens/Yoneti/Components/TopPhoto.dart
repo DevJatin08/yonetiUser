@@ -28,13 +28,16 @@ class TopPhotos extends HookConsumerWidget {
               if (data!.photos!.isNotEmpty) {
                 return GridView.builder(
                   itemCount: data.photos!.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
                       child: InkWell(
                         onTap: () async {
-                          await APICall().apiGetProfile(data.photos![index].user_id!).then(
+                          await APICall()
+                              .apiGetProfile(data.photos![index].user_id!)
+                              .then(
                             (value) {
                               log(
                                 "$value",
@@ -66,15 +69,19 @@ class TopPhotos extends HookConsumerWidget {
                                           data.photos![index].image.toString(),
                                         ),
                                         fit: BoxFit.cover),
-                                    borderRadius: BorderRadius.circular(cardRadius)),
+                                    borderRadius:
+                                        BorderRadius.circular(cardRadius)),
                               )
                             : Container(
                                 // height: 50,
                                 // width: 50,
                                 decoration: BoxDecoration(
                                   // color: thirdColor,
-                                  image: DecorationImage(image: NetworkImage(imagenotfound), fit: BoxFit.cover),
-                                  borderRadius: BorderRadius.circular(cardRadius),
+                                  image: DecorationImage(
+                                      image: NetworkImage(imagenotfound),
+                                      fit: BoxFit.cover),
+                                  borderRadius:
+                                      BorderRadius.circular(cardRadius),
                                 ),
                               ),
                       ),

@@ -10,13 +10,13 @@ GetLikeData getLikeDataFromJson(String str) =>
 String getLikeDataToJson(GetLikeData data) => json.encode(data.toJson());
 
 class GetLikeData {
-  GetLikeData({
-    required this.likeUsers,
-  });
+  GetLikeData({required this.likeUsers, required this.flag});
 
   List<LikeUser> likeUsers;
+  String flag;
 
   factory GetLikeData.fromJson(Map<String, dynamic> json) => GetLikeData(
+        flag: json['flag'] ?? '0',
         likeUsers: List<LikeUser>.from(
             json["like_users"].map((x) => LikeUser.fromJson(x))),
       );

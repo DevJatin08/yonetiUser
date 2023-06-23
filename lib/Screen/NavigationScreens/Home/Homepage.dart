@@ -220,100 +220,78 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     }),
                               ),
                             ),
-                            FutureBuilder<HomePackagesDetail>(
-                                future:
-                                    _homeServiceInfoProvider.getAdsPackages(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Container();
-                                  }
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                    return Container(
-                                        height: 70,
-                                        child: CarouselSlider.builder(
-                                            itemCount: snapshot
-                                                .data!.packagesDetails!.length,
-                                            itemBuilder: (BuildContext context,
-                                                int itemIndex,
-                                                int pageViewIndex) {
-                                              return InkWell(
-                                                onTap: () {
-                                                  _homeServiceInfoProvider
-                                                      .adsPackageRequests(
-                                                          packageId: snapshot
-                                                              .data!
-                                                              .packagesDetails![
-                                                                  itemIndex]
-                                                              .id!,
-                                                          packageName: snapshot
-                                                              .data!
-                                                              .packagesDetails![
-                                                                  itemIndex]
-                                                              .name!,
-                                                          context: context);
-                                                },
-                                                child: Container(
-                                                  height: 70,
-                                                  width: 300,
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 5),
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            snapshot
-                                                                .data!
-                                                                .packagesDetails![
-                                                                    itemIndex]
-                                                                .image!),
-                                                        fit: BoxFit.fitHeight),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            options: CarouselOptions(
-                                              height: 70,
-                                              aspectRatio: 16 / 9,
-                                              viewportFraction: 1,
-                                              initialPage: 0,
-                                              enableInfiniteScroll: true,
-                                              reverse: false,
-                                              autoPlay: true,
-                                              autoPlayInterval:
-                                                  Duration(seconds: 3),
-                                              autoPlayAnimationDuration:
-                                                  Duration(milliseconds: 800),
-                                              autoPlayCurve:
-                                                  Curves.fastOutSlowIn,
-                                              enlargeCenterPage: true,
-                                              scrollDirection: Axis.horizontal,
-                                            ))
-                                        //  ListView.builder(
-                                        //   itemCount:
-                                        //       snapshot.data!.packagesDetails!.length,
-                                        //   itemBuilder: (context, index) {
-                                        //     return Container(
-                                        //       height: 70,
-                                        //       width: 300,
-                                        //       padding:
-                                        //           EdgeInsets.symmetric(vertical: 5),
-                                        //       decoration: BoxDecoration(
-                                        //         image: DecorationImage(
-                                        //             image: NetworkImage(snapshot
-                                        //                 .data!
-                                        //                 .packagesDetails![index]
-                                        //                 .image!),
-                                        //             fit: BoxFit.fitHeight),
-                                        //       ),
-                                        //     );
-                                        //   },
-                                        // ),
-                                        );
-                                  } else {
-                                    return SizedBox();
-                                  }
-                                })
-                            // _homeServiceInfoProvider
+                            // FutureBuilder<HomePackagesDetail>(
+                            //     future:
+                            //         _homeServiceInfoProvider.getAdsPackages(),
+                            //     builder: (context, snapshot) {
+                            //       if (!snapshot.hasData) {
+                            //         return Container();
+                            //       }
+                            //       if (snapshot.connectionState ==
+                            //           ConnectionState.done) {
+                            //         return Container(
+                            //             height: 70,
+                            //             child: CarouselSlider.builder(
+                            //                 itemCount: snapshot
+                            //                     .data!.packagesDetails!.length,
+                            //                 itemBuilder: (BuildContext context,
+                            //                     int itemIndex,
+                            //                     int pageViewIndex) {
+                            //                   return InkWell(
+                            //                     onTap: () {
+                            //                       _homeServiceInfoProvider
+                            //                           .adsPackageRequests(
+                            //                               packageId: snapshot
+                            //                                   .data!
+                            //                                   .packagesDetails![
+                            //                                       itemIndex]
+                            //                                   .id!,
+                            //                               packageName: snapshot
+                            //                                   .data!
+                            //                                   .packagesDetails![
+                            //                                       itemIndex]
+                            //                                   .name!,
+                            //                               context: context);
+                            //                     },
+                            //                     child: Container(
+                            //                       height: 70,
+                            //                       width: 300,
+                            //                       padding: EdgeInsets.symmetric(
+                            //                           vertical: 5),
+                            //                       decoration: BoxDecoration(
+                            //                         image: DecorationImage(
+                            //                             image: NetworkImage(
+                            //                                 snapshot
+                            //                                     .data!
+                            //                                     .packagesDetails![
+                            //                                         itemIndex]
+                            //                                     .image!),
+                            //                             fit: BoxFit.fitHeight),
+                            //                       ),
+                            //                     ),
+                            //                   );
+                            //                 },
+                            //                 options: CarouselOptions(
+                            //                   height: 70,
+                            //                   aspectRatio: 16 / 9,
+                            //                   viewportFraction: 1,
+                            //                   initialPage: 0,
+                            //                   enableInfiniteScroll: true,
+                            //                   reverse: false,
+                            //                   autoPlay: true,
+                            //                   autoPlayInterval:
+                            //                       Duration(seconds: 3),
+                            //                   autoPlayAnimationDuration:
+                            //                       Duration(milliseconds: 800),
+                            //                   autoPlayCurve:
+                            //                       Curves.fastOutSlowIn,
+                            //                   enlargeCenterPage: true,
+                            //                   scrollDirection: Axis.horizontal,
+                            //                 )));
+                            //       } else {
+                            //         return SizedBox();
+                            //       }
+                            //     })
                           ],
                         );
             } else {

@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:userapp/Constant/Global.dart';
 import 'package:userapp/Screen/AuthScreens/LoginScreen.dart';
 import 'package:userapp/Screen/NavigationScreens/BaseScreen.dart';
+import 'package:userapp/Screen/Splash/FirstExperience.dart';
 
 class Wrapper extends ConsumerStatefulWidget {
   Wrapper({Key? key}) : super(key: key);
@@ -17,6 +18,10 @@ class _WrapperState extends ConsumerState<Wrapper> {
   Widget build(BuildContext context) {
     final userProvider = ref.watch(userInfoProvider);
     // return BaseHomeWidget();
-    return !userProvider.isLogin ? LoginScreen() : BaseHomeWidget();
+    //  spHepler.setPrefbool('IsVerified', true);
+    bool val = spHepler.getPrefbool('IsVerified') ?? false;
+    return (userProvider.isLogin && val)
+        ? BaseHomeWidget()
+        : FirstTimeExperienceScreen();
   }
 }
